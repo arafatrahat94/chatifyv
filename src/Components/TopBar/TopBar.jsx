@@ -2,7 +2,7 @@ import Image from "next/image";
 import logo from "@/Assets/Chatify.png";
 const TopBar = () => {
   return (
-    <div className="sticky top-[-1px] z-20">
+    <div className="sticky top-[-1px] z-10 lg:z-20">
       <div className="bg-purpleLightC h-[70px] flex justify-center items-center">
         <Image
           src={logo}
