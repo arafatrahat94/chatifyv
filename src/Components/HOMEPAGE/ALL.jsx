@@ -31,6 +31,9 @@ const ALL = () => {
       <div>
         <SINGLEPOST />
       </div>
+      <button className="lg:px-10 bg-purpleC text-white px-5 flex justify-center mt-3 lg:text-base text-sm dark:bg-purpleLightC py-2 rounded-[4px]">
+        See More
+      </button>
     </div>
   );
 };

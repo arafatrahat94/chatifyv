@@ -54,11 +54,11 @@ const POST = () => {
             <div className="flex justify-end m-4">
               <button
                 onClick={() => setPostLater(true)}
-                className="px-6 mx-1 dark:text-purpleLightC text-purpleC  py-2 rounded-[4px]"
+                className="lg:px-6 mx-1 dark:text-purpleLightC text-purpleC  py-2 px-3 lg:text-base text-sm rounded-[4px]"
               >
                 POST LATER
               </button>
-              <button className="px-10 bg-purpleC text-white dark:bg-purpleLightC py-2 rounded-[4px]">
+              <button className="lg:px-10 bg-purpleC text-white px-5 lg:text-base text-sm dark:bg-purpleLightC py-2 rounded-[4px]">
                 POST
               </button>
             </div>

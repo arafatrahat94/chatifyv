@@ -14,6 +14,8 @@ import "./nav.css";
 import ToogleDarkLight from "../DarkLightmode/ToogleDarkLight";
 import { useEffect, useState } from "react";
 import OutsideClickHandler from "react-outside-click-handler";
+import SearchBar from "../SUGGESTION/SearchBar/SearchBar";
+import Suggestion from "../SUGGESTION/Suggestion/Suggestion";
 const MediumDeviceNav = () => {
   const navlink = [
     {
@@ -78,6 +80,7 @@ const MediumDeviceNav = () => {
             navOpen ? "right-0 opacity-100" : "opacity-0 -right-[-120%]"
           } bg-white dark:bg-secondaryBgDark border-b gap-x-2 min-h-screen md:pt-12 pt-5 transition duration-500 transform z-10`}
         >
+          <SearchBar></SearchBar>
           {navlink2.map(({ path, title }) => (
             <>
               <NavLink
@@ -101,6 +104,7 @@ const MediumDeviceNav = () => {
           <div className="flex justify-center">
             <ToogleDarkLight />
           </div>
+          <Suggestion></Suggestion>
         </div>
       </OutsideClickHandler>
       <div className="flex bg-white dark:bg-secondaryBgDark dark:border-none border-b gap-x-2 justify-center relative h-[50px] px-28">

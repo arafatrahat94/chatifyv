@@ -50,7 +50,7 @@ const Nav = () => {
             <NavLink
               exact={path === "/"}
               activeClassName="font-bold text-purpleLightC opacity-100"
-              className="flex text-grayC opacity-60 justify-start  mb-[20px]  text-xl items-center gap-x-2"
+              className="flex text-grayC  justify-start  mb-[20px]  text-xl items-center gap-x-2"
               href={path}
             >
               {title === "Home" && <RiHomeLine />}
