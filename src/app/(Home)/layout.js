@@ -1,10 +1,12 @@
 import MediumDeviceNav from "@/Components/NAVBAR/MediumDeviceNav";
 import Nav from "@/Components/NAVBAR/Nav";
 import TopBar from "@/Components/TopBar/TopBar";
+import LoadingANimation from "@/Utilities/LoadingANimation";
 
 const layout = ({ children }) => {
   return (
     <div className=" dark:bg-primaryBgDark">
+      <LoadingANimation></LoadingANimation>
       <TopBar />
       <MediumDeviceNav />
       <div className="flex w-full">
