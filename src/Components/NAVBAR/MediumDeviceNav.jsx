@@ -63,7 +63,7 @@ const MediumDeviceNav = () => {
       >
         <button
           className="absolute 
-    -top-[50px] z-20 md:top-2 right-5
+    -top-[50px] z-30 md:top-2 right-5
     "
         >
           <div onClick={() => setNavOpen(!navOpen)} class="switch2">
