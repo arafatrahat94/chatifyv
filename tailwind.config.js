@@ -8,6 +8,9 @@ module.exports = {
 
   theme: {
     extend: {
+      fontFamily: {
+        rubik: "var(--font-rubik)",
+      },
       colors: {
         purpleLightC: "#5858FA",
         purpleC: "#150AA1",
