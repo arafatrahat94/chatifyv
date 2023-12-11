@@ -7,6 +7,7 @@ import {
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
+  signOut,
 } from "firebase/auth";
 import app from "@/Firebase/firebase.config";
 export const AuthContextProvider = createContext(null);
@@ -33,7 +34,10 @@ const AuthProvider = ({ children }) => {
     setLoading(true);
     return sendPasswordResetEmail(auth, email);
   };
-
+  const logOut = () => {
+    setLoading(true);
+    return signOut(auth);
+  };
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (CurrenUser) => {
       setUser(CurrenUser);
@@ -47,6 +51,8 @@ const AuthProvider = ({ children }) => {
     glog,
     signIn,
     forgotPass,
+    user,
+    logOut,
   };
   return (
     <AuthContextProvider.Provider value={authData}>

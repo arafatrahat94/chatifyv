@@ -65,20 +65,23 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
   };
   return (
     <div>
-      <div className="md:pe-[94px] lg:ps-[76px] ps-8 pe-8 py-[50px]">
+      <div className="md:pe-[60px] lg:ps-[76px] ps-8 md:ps-14 lg:pe-[85px] pe-8 py-[50px]">
         <h1 className="font-bold text-xl text-purpleC dark:text-purpleLightC">
           Sign Up
         </h1>
         <form onSubmit={handleSubmit(onSubmit)} className="mt-[29px]">
           <div className="flex gap-y-2 flex-col mb-[23px]">
-            <label className="text-[14px] text-gray-500" htmlFor="userName">
+            <label
+              className="text-[14px] text-gray-500 dark:text-purpleLightC"
+              htmlFor="userName"
+            >
               Full Name
             </label>
             <input
               type="text"
               {...register("userName", { required: true })}
               placeholder="full name"
-              className="h-[42px] border border-grayC border-opacity-30 bg-secondaryBgLight rounded-md focus:outline-none px-4"
+              className="h-[42px] border border-grayC dark:bg-secondaryBgDark border-opacity-30 bg-secondaryBgLight rounded-md focus:outline-none px-4"
               id="userName"
             />{" "}
             {errors.userName && (
@@ -89,14 +92,17 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
             )}
           </div>
           <div className="flex gap-y-2 flex-col mb-[23px]">
-            <label className="text-[14px] text-gray-500" htmlFor="userId">
+            <label
+              className="text-[14px] text-gray-500 dark:text-purpleLightC"
+              htmlFor="userId"
+            >
               UserId
             </label>
             <input
               type="text"
               {...register("userId", { required: true })}
               placeholder="@userId"
-              className="h-[42px] border border-grayC border-opacity-30 bg-secondaryBgLight rounded-md focus:outline-none px-4"
+              className="h-[42px] border border-grayC border-opacity-30 bg-secondaryBgLight rounded-md focus:outline-none dark:bg-secondaryBgDark px-4"
               id="useId"
             />
             {errors.userId && (
@@ -107,14 +113,17 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
             )}
           </div>
           <div className="flex gap-y-2 flex-col mb-[23px]">
-            <label htmlFor="email" className="text-[14px] text-gray-500">
+            <label
+              htmlFor="email"
+              className="text-[14px] text-gray-500 dark:text-purpleLightC"
+            >
               Email
             </label>
             <input
               type="email"
               {...register("email", { required: true })}
               placeholder="@email.com"
-              className="h-[42px] border border-grayC border-opacity-30 bg-secondaryBgLight rounded-md focus:outline-none px-4"
+              className="h-[42px] border border-grayC dark:bg-secondaryBgDark border-opacity-30 bg-secondaryBgLight rounded-md focus:outline-none px-4"
               id="email"
             />
             {errors.userId && (
@@ -125,7 +134,10 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
             )}
           </div>
           <div className="flex gap-y-2 flex-col mb-[23px]">
-            <label className="text-[14px] text-gray-500" htmlFor="password">
+            <label
+              className="text-[14px] text-gray-500 dark:text-purpleLightC"
+              htmlFor="password"
+            >
               Password
             </label>
             <div className="relative">
@@ -133,7 +145,7 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
                 {...register("Pass", { required: true })}
                 type={showPassword ? "text" : "password"}
                 placeholder="pAssw0rd"
-                className="h-[42px] border border-grayC border-opacity-30 bg-secondaryBgLight rounded-md focus:outline-none w-full px-4"
+                className="h-[42px] border border-grayC dark:bg-secondaryBgDark border-opacity-30 bg-secondaryBgLight rounded-md focus:outline-none w-full px-4"
                 id="password"
               />
               {errors.Pass && (
@@ -145,7 +157,7 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-xl font-bold text-grayC absolute right-3 top-1/2 -translate-y-1/2"
+                className="text-xl font-bold text-grayC absolute right-3 top-1/2 dark:text-purpleLightC -translate-y-1/2"
               >
                 {showPassword !== false ? (
                   <IoEyeOutline />
@@ -157,7 +169,7 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
           </div>
           <div className="flex gap-y-2 flex-col mb-[23px]">
             <label
-              className="text-[14px] text-gray-500"
+              className="text-[14px] text-gray-500 dark:text-purpleLightC"
               htmlFor="confirmPassword"
             >
               Confirm Password
@@ -167,7 +179,7 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
                 type={showPassword ? "text" : "password"}
                 {...register("ConfirmPass", { required: true })}
                 placeholder="pAssw0rd"
-                className="h-[42px] border border-grayC border-opacity-30 bg-secondaryBgLight rounded-md focus:outline-none w-full px-4"
+                className="h-[42px] border border-grayC border-opacity-30 bg-secondaryBgLight rounded-md focus:outline-none dark:bg-secondaryBgDark w-full px-4"
                 id="confirmPassword"
               />{" "}
               {errors.ConfirmPass && (
@@ -179,7 +191,7 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-xl font-bold text-grayC absolute right-3 top-1/2 -translate-y-1/2"
+                className="text-xl font-bold text-grayC absolute right-3 top-1/2 dark:text-purpleLightC -translate-y-1/2"
               >
                 {showPassword !== false ? (
                   <IoEyeOutline />
@@ -199,20 +211,20 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
           </div>
         </form>
         <div className="my-[20px]">
-          <h1 className="text-sm text-grayC">
+          <h1 className="text-sm text-grayC dark:text-secondaryBgLight dark:text-opacity-60">
             By signing up you agree to our{" "}
-            <span className="link text-purpleC dark:bg-purpleLightC">
+            <span className="link text-purpleC dark:text-purpleLightC">
               Terms of Service
             </span>{" "}
             and{" "}
-            <span className="link text-purpleC dark:bg-purpleLightC">
+            <span className="link text-purpleC dark:text-purpleLightC">
               Privacy Policy
             </span>{" "}
             and confirm that you are at least 18 years old.{" "}
           </h1>
         </div>
         <div>
-          <h1 className="font-[500] tracking-wide">
+          <h1 className="font-[500] tracking-wide md:text-sm lg:text-base">
             Already have an account? &nbsp;&nbsp;
             <Link
               href="/SIgnInUp/SignIn"
@@ -224,8 +236,8 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
         </div>
 
         <div onClick={handleGlogin} className="pe-[70px] my-[40px]">
-          <h1 className="mb-6 text-grayC">Or</h1>
-          <button className="flex items-center gap-x-2 bg-secondaryBgLight rounded-md px-4 py-2 border-grayC border border-opacity-25 justify-center">
+          <h1 className="mb-6 dark:text-purpleLightC text-grayC">Or</h1>
+          <button className="flex items-center gap-x-2 bg-secondaryBgLight rounded-md px-4 py-2 border-grayC border dark:text-white dark:bg-purpleLightC border-opacity-25 md:text-sm lg:text-base justify-center">
             <Image src={gIcon} width={20} height={20} alt="Google Icon"></Image>{" "}
             Sign up with google
           </button>

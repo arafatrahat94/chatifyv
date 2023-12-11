@@ -132,14 +132,17 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
     }
   }, []);
   return (
-    <div className="min-h-screen flex justify-center dark:bg-black items-center">
-      <div className="md:pe-[94px]  lg:ps-[76px] ps-8 pe-8 py-[50px]">
+    <div className="min-h-screen flex justify-center dark:bg-primaryBgDark items-center">
+      <div className="md:pe-[94px]  lg:ps-[76px] ps-8 pe-8 py-[10px]">
         <h1 className="font-bold text-xl text-purpleC dark:text-purpleLightC">
           Sign In
         </h1>
         <form onSubmit={handleSubmit(onSubmit)} className="mt-[29px]">
           <div className="flex gap-y-2 flex-col mb-[23px]">
-            <label htmlFor="email" className="text-[14px] text-gray-500">
+            <label
+              htmlFor="email"
+              className="text-[14px] text-gray-500 dark:text-purpleLightC"
+            >
               Email
             </label>
             <input
@@ -147,11 +150,14 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
               {...register("email")}
               defaultValue={initialEmail}
               placeholder="@email.com"
-              className="h-[42px] border border-grayC border-opacity-30 bg-secondaryBgLight rounded-md focus:outline-none px-4"
+              className="h-[42px] border border-grayC dark:bg-secondaryBgDark border-opacity-30 bg-secondaryBgLight rounded-md focus:outline-none px-4"
             />
           </div>
           <div className="flex gap-y-2 flex-col mb-[23px]">
-            <label className="text-[14px] text-gray-500" htmlFor="password">
+            <label
+              className="text-[14px] text-gray-500 dark:text-purpleLightC"
+              htmlFor="password"
+            >
               Password
             </label>
             <div className="relative">
@@ -162,14 +168,15 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
                   type={showPassword ? "text" : "password"}
                   defaultValue={initialPass}
                   placeholder="pAssw0rd"
-                  className="h-[42px] border border-grayC border-opacity-30 bg-secondaryBgLight rounded-md focus:outline-none w-full px-4"
+                  className="h-[42px] border border-grayC border-opacity-30 bg-secondaryBgLight rounded-md dark:bg-secondaryBgDark
+                  focus:outline-none w-full px-4"
                   id="password"
                 />
               </div>
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-xl font-bold text-grayC absolute right-3 top-1/2 -translate-y-1/2"
+                className="text-xl font-bold text-grayC absolute dark:text-purpleLightC right-3 top-1/2 -translate-y-1/2"
               >
                 {showPassword !== false ? (
                   <IoEyeOutline />
@@ -223,8 +230,8 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
         </div>
 
         <div onClick={handleGlogin} className="pe-[70px] my-[40px]">
-          <h1 className="mb-6 text-grayC">Or</h1>
-          <button className="flex items-center gap-x-2 bg-secondaryBgLight rounded-md px-4 py-2 border-grayC border border-opacity-25 justify-center">
+          <h1 className="mb-6 dark:text-purpleLightC text-grayC">Or</h1>
+          <button className="flex items-center gap-x-2 dark:bg-purpleLightC dark:text-white bg-secondaryBgLight rounded-md px-4 py-2 border-grayC border md:text-sm lg:text-base border-opacity-25 justify-center">
             <Image src={gIcon} width={20} height={20} alt="Google Icon"></Image>{" "}
             Sign In with google
           </button>
@@ -236,7 +243,7 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
           onClick={() => document.getElementById("my_modal_4").showModal()}
         ></button>
         <dialog id="my_modal_4" className="modal bg-black bg-opacity-25">
-          <div className="modal-box  dark:bg-grayC max-w-[450px] rounded-md ">
+          <div className="modal-box  dark:bg-primaryBgDark max-w-[450px] rounded-md ">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
               <button className="btn btn-sm btn-circle text-center flex items-center justify-center bg-purpleLightC btn-ghost absolute text-white right-2 top-2">
@@ -257,7 +264,7 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
           </div>
         </dialog>
         <dialog id="my_modal_3" className="modal bg-black bg-opacity-25">
-          <div className="modal-box  dark:bg-grayC max-w-[400px] rounded-md ">
+          <div className="modal-box  dark:bg-primaryBgDark  max-w-[400px] rounded-md ">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
               <button className="btn btn-sm btn-circle text-center flex items-center justify-center bg-purpleLightC btn-ghost absolute text-white right-2 top-2">
@@ -278,7 +285,7 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
           </div>
         </dialog>
         <dialog id="my_modal_5" className="modal bg-black bg-opacity-25">
-          <div className="modal-box  dark:bg-grayC max-w-[400px] rounded-md ">
+          <div className="modal-box  dark:bg-primaryBgDark max-w-[400px] rounded-md ">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
               <button className="btn btn-sm btn-circle text-center flex items-center justify-center bg-purpleLightC btn-ghost absolute text-white right-2 top-2">

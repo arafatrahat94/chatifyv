@@ -15,7 +15,7 @@ const layout = ({ children }) => {
         <div className="  ">
           <Nav></Nav>
         </div>
-        <div className="xl:w-[750px] mx-auto lg:mr-auto lg:ms-0 md:w-[768px] lg:w-[550px]  flex-shrink-0 dark:border-darkborder  border">
+        <div className="xl:w-[750px] mx-auto lg:mr-auto lg:ms-0 md:w-[768px] lg:w-[550px] w-full flex-shrink-0 ">
           {children}
         </div>
         <div className=" hidden lg:block flex-grow ">

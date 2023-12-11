@@ -9,6 +9,7 @@ const GlobalError = (error, reset) => {
   const router = useRouter();
   const handleReload = () => {
     // revalidatePath(window.location.href, "layout");
+    window.location.reload();
     router.refresh();
   };
   console.log(window.location.href);

@@ -4,7 +4,7 @@ import Image from "next/image";
 const ImageComponent = () => {
   return (
     <div className="dark:bg-primaryBgDark bg-white">
-      <div className="dark:bg-primaryBgDark bg-white  md:min-h-screen flex items-center pt-10 md:p-16 lg:p-24 justify-center">
+      <div className="md:dark:bg-secondaryBgDark bg-white lg:dark:bg-primaryBgDark dark:bg-primaryBgDark  md:min-h-screen flex items-center pt-14 md:p-16 lg:p-24 justify-center">
         <Image
           src={signInbanner}
           alt="banner"
