@@ -1,14 +1,17 @@
 "use client";
 
+import { revalidatePath } from "next/cache";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 const GlobalError = (error, reset) => {
   let currentLocation = window.origin;
+  const router = useRouter();
   const handleReload = () => {
-    redirect((window.location.href = currentLocation));
+    // revalidatePath(window.location.href, "layout");
+    router.refresh();
   };
-  console.log(currentLocation);
+  console.log(window.location.href);
   return (
     <div>
       <div className="min-h-screen w-full flex justify-center items-center dark:bg-primaryBgDark bg-white">

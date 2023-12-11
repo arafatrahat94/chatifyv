@@ -15,7 +15,7 @@ const SignUpPage = () => {
       >
         <ComponentLoader></ComponentLoader>
       </div>
-      <div className="grid  md:grid-cols-2 h-[872px]">
+      <div className="grid dark:bg-primaryBgDark bg-white md:grid-cols-2 h-[872px]">
         <div className="">
           <ImageComponent></ImageComponent>
         </div>
