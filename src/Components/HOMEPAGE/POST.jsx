@@ -17,7 +17,8 @@ const POST = () => {
             {/* TODO: this will be rich text editor */}
             <textarea
               placeholder="Compose new post"
-              className="m-4 bg-transparent dark:bg-primaryBgDark outline-none rounded-md p-4 w-[307px] md:w-[95%] min-h-[107px]"
+              className="m-4 bg-transparent dark:bg-primaryBgDark outline-none rounded-md p-4 w-[90%]
+               md:w-[95%] min-h-[107px]"
             ></textarea>
             {/* TODO: post features */}
             <div className="flex dark:bg-transparent py-1 gap-x-6 mx-6 relative -mt-[54px]  ">
