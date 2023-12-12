@@ -46,16 +46,16 @@ const Nav = () => {
   const [error, setError] = useState("");
 
   const logoutConfirm = () => {
-    return document.getElementById("my_modal_2").showModal();
+    return document.getElementById("my_modal_O").showModal();
   };
   const logOutHandler = () => {
     logOut()
       .then(() => {
-        return document.getElementById("my_modal_3").showModal();
+        return document.getElementById("my_modal_T").showModal();
       })
       .catch((err) => {
         setError(err.message.split("Firebase:").join(""));
-        return document.getElementById("my_modal_4").showModal();
+        return document.getElementById("my_modal_S").showModal();
       });
   };
   return (
@@ -115,7 +115,7 @@ const Nav = () => {
         )}
 
         {/* logout confirm handler modal*/}
-        <dialog id="my_modal_2" className="modal p-0">
+        <dialog id="my_modal_O" className="modal p-0">
           <div className="modal-box  dark:bg-primaryBgDark max-w-[400px] rounded-md ">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
@@ -143,7 +143,7 @@ const Nav = () => {
                 Confirm
               </button>
               <button
-                onClick={() => document.getElementById("my_modal_2").close()}
+                onClick={() => document.getElementById("my_modal_T").close()}
                 className="btn border border-purpleLightC bg-transparent text-purpleLightC"
               >
                 Cancel
@@ -152,7 +152,7 @@ const Nav = () => {
           </div>
         </dialog>
         {/* logout handler modal*/}
-        <dialog id="my_modal_3" className="modal bg-black bg-opacity-25">
+        <dialog id="my_modal_T" className="modal bg-black bg-opacity-25">
           <div className="modal-box   dark:bg-primaryBgDark max-w-[400px] rounded-md ">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
@@ -174,8 +174,8 @@ const Nav = () => {
           </div>
         </dialog>
         {/* logout error handler modal*/}
-        <dialog id="my_modal_4" className="modal bg-black bg-opacity-25">
-          <div className="modal-box   dark:bg-primaryBgDark max-w-[400px] rounded-md ">
+        <dialog id="my_modal_S" className="modal bg-black bg-opacity-25">
+          <div className="modal-box   dark:bg-primaryBgDark max-w-[400px] rounded-md mx-auto">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
               <button className="btn btn-sm btn-circle text-center flex items-center justify-center bg-purpleLightC btn-ghost absolute text-white right-2 top-2">
