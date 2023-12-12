@@ -4,6 +4,8 @@ import { IoSettingsSharp } from "react-icons/io5";
 import { AiOutlineFilter } from "react-icons/ai";
 import { MdOutlineCancel } from "react-icons/md";
 import { useState } from "react";
+import Image from "next/image";
+import Dynamicimage from "@/Utilities/DynamicImage";
 const NotificationPageComponent = () => {
   const [activeAll, setActiveAll] = useState(true);
   const [activeFollow, setActiveFollow] = useState(false);
@@ -28,82 +30,88 @@ const NotificationPageComponent = () => {
             Sort By
           </h3>
           <div className="flex items-center justify-center mx-2 mb-4">
-            <div className="mt-2 flex flex-wrap justify-items-start gap-x-2 gap-y-2 w-full">
-              <button
-                onClick={() => {
-                  setActiveAll(true);
-                  setActiveFollow(false);
-                  setActiveLikes(false);
-                  setActiveComments(false);
-                  setActiveMentions(false);
-                }}
-                className={`btn ${
-                  activeAll &&
-                  "bg-purpleLightC hover:bg-purpleLightC text-white"
-                } text-purpleLightC border-none `}
-              >
-                All
-              </button>
-              <button
-                onClick={() => {
-                  setActiveAll(false);
-                  setActiveFollow(true);
-                  setActiveLikes(false);
-                  setActiveComments(false);
-                  setActiveMentions(false);
-                }}
-                className={`btn ${
-                  activeFollow &&
-                  "bg-purpleLightC hover:bg-purpleLightC text-white"
-                } text-purpleLightC border-none `}
-              >
-                Follow
-              </button>
-              <button
-                onClick={() => {
-                  setActiveAll(false);
-                  setActiveFollow(false);
-                  setActiveLikes(true);
-                  setActiveComments(false);
-                  setActiveMentions(false);
-                }}
-                className={`btn ${
-                  activeLikes &&
-                  "bg-purpleLightC hover:bg-purpleLightC text-white"
-                } text-purpleLightC border-none`}
-              >
-                Likes
-              </button>
-              <button
-                onClick={() => {
-                  setActiveAll(false);
-                  setActiveFollow(false);
-                  setActiveLikes(false);
-                  setActiveComments(true);
-                  setActiveMentions(false);
-                }}
-                className={`btn ${
-                  activeComments &&
-                  "bg-purpleLightC hover:bg-purpleLightC text-white"
-                } text-purpleLightC border-none`}
-              >
-                Comments
-              </button>
-              <button
-                onClick={() => {
-                  setActiveAll(false);
-                  setActiveFollow(false);
-                  setActiveLikes(false);
-                  setActiveComments(false);
-                  setActiveMentions(true);
-                }}
-                className={`btn ${
-                  activeMentions &&
-                  "bg-purpleLightC hover:bg-purpleLightC text-white"
-                }  text-purpleLightC border-none`}
-              >
-                Mentions
-              </button>
+            <div className="mt-2 grid grid-cols-2 justify-items-start gap-x-2 gap-y-2 w-full">
+              <div className="flex w-full gap-y-1 flex-col">
+                {" "}
+                <button
+                  onClick={() => {
+                    setActiveAll(true);
+                    setActiveFollow(false);
+                    setActiveLikes(false);
+                    setActiveComments(false);
+                    setActiveMentions(false);
+                  }}
+                  className={`btn ${
+                    activeAll &&
+                    "bg-purpleLightC hover:bg-purpleLightC text-white"
+                  } text-purpleLightC border-none `}
+                >
+                  All
+                </button>
+                <button
+                  onClick={() => {
+                    setActiveAll(false);
+                    setActiveFollow(true);
+                    setActiveLikes(false);
+                    setActiveComments(false);
+                    setActiveMentions(false);
+                  }}
+                  className={`btn ${
+                    activeFollow &&
+                    "bg-purpleLightC hover:bg-purpleLightC text-white"
+                  } text-purpleLightC border-none `}
+                >
+                  Follow
+                </button>
+                <button
+                  onClick={() => {
+                    setActiveAll(false);
+                    setActiveFollow(false);
+                    setActiveLikes(true);
+                    setActiveComments(false);
+                    setActiveMentions(false);
+                  }}
+                  className={`btn ${
+                    activeLikes &&
+                    "bg-purpleLightC hover:bg-purpleLightC text-white"
+                  } text-purpleLightC border-none`}
+                >
+                  Likes
+                </button>
+              </div>
+              <div className="flex flex-col w-full gap-y-1">
+                {" "}
+                <button
+                  onClick={() => {
+                    setActiveAll(false);
+                    setActiveFollow(false);
+                    setActiveLikes(false);
+                    setActiveComments(true);
+                    setActiveMentions(false);
+                  }}
+                  className={`btn ${
+                    activeComments &&
+                    "bg-purpleLightC hover:bg-purpleLightC text-white"
+                  } text-purpleLightC border-none`}
+                >
+                  Comments
+                </button>
+                <button
+                  onClick={() => {
+                    setActiveAll(false);
+                    setActiveFollow(false);
+                    setActiveLikes(false);
+                    setActiveComments(false);
+                    setActiveMentions(true);
+                  }}
+                  className={`btn ${
+                    activeMentions &&
+                    "bg-purpleLightC hover:bg-purpleLightC text-white"
+                  }  text-purpleLightC border-none`}
+                >
+                  Mentions
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -121,7 +129,7 @@ const NotificationPageComponent = () => {
                   document.getElementById("my_modal_Notif").showModal()
                 }
                 tabIndex={0}
-                className="btn p-0 dark:text-purpleLightC text-purpleC text-xl"
+                className="btn  dark:text-purpleLightC text-purpleC text-xl"
               >
                 <AiOutlineFilter />
               </div>
@@ -139,7 +147,7 @@ const NotificationPageComponent = () => {
             </div>
             <Link
               href=""
-              className="btn dark:text-purpleLightC text-purpleC text-xl p-0 "
+              className="btn dark:text-purpleLightC text-purpleC text-xl  "
             >
               <IoSettingsSharp />
             </Link>

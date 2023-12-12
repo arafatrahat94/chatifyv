@@ -16,7 +16,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" data-theme="light" className="transition-all">
+    <html lang="en" data-theme="dark" className="transition-all">
       <body className={`${rubik.variable} font-rubik mx-auto`}>
         <Providers>{children}</Providers>
       </body>
