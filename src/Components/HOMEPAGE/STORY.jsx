@@ -10,10 +10,12 @@ import { MdOutlineCancel } from "react-icons/md";
 const STORY = () => {
   const [storyImage, setStoryImage] = useState("");
   const onImageChange = (event) => {
+    console.log(event.target.files);
     if (event.target.files && event.target.files[0]) {
       setStoryImage(URL.createObjectURL(event.target.files[0]));
     }
   };
+
   const { user } = useAuth();
   return (
     <div className=" mt-3 ">
@@ -53,7 +55,7 @@ const STORY = () => {
 
         {/* story post modal */}
         <dialog id="my_modal_Story" className="modal bg-black bg-opacity-25">
-          <div className="modal-box   dark:bg-primaryBgDark max-w-[400px] rounded-md ">
+          <div className="min-h-screen bg-white  dark:bg-primaryBgDark min-w-full  rounded-md ">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
               <button
@@ -65,29 +67,33 @@ const STORY = () => {
                 </>
               </button>
             </form>
-            <h3 className="font-bold flex justify-center mt-10  text-xl text-purpleC dark:text-purpleLightC">
+            <h3 className="font-bold flex justify-center mt-10 z-40 text-xl text-purpleC dark:text-purpleLightC">
               Add Story
             </h3>
             <label
               for="file"
-              class=" min-h-[200px] min-w-[290px] flex flex-col  mt-3 gap-5 cursor-pointer items-center justify-center bg-white shadow-[0px_48px_35px_-48px_rgba(0,0,0,0.1)]  rounded-[10px] border-2 border-dashed border-[#cacaca]"
+              class={`${
+                storyImage
+                  ? ""
+                  : " shadow-[0px_48px_35px_-48px_rgba(0,0,0,0.1)]  rounded-[10px] dark:border-grayC border-2 border-dashed border-[#cacaca] dark:bg-secondaryBgDark bg-white mx-5"
+              } min-h-[78vh] max-h-[78vh] min-w-[290px] flex flex-col  mt-3 gap-5 cursor-pointer items-center justify-center  `}
             >
-              <div class="flex items-center justify-center h-full w-full object-cover">
+              <div class="flex items-center justify-center h-full w-full  object-cover">
                 {storyImage.length > 0 ? (
                   <Image
                     src={storyImage}
                     alt=""
-                    className="w-full object-cover rounded-[10px] h-full"
+                    className="w-full max-h-[80vh] md:object-scale-down object-cover h-full "
                     width={100}
                     height={100}
                   ></Image>
                 ) : (
-                  <div>
+                  <div className="flex items-center justify-center flex-col">
                     <svg
                       viewBox="0 0 24 24"
                       fill=""
                       xmlns="http://www.w3.org/2000/svg"
-                      class="h-20 fill-gray-600"
+                      class="h-20  dark:fill-purpleLightC fill-purpleC"
                     >
                       <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                       <g
@@ -105,7 +111,7 @@ const STORY = () => {
                       </g>
                     </svg>
                     <div class="flex items-center justify-center">
-                      <span class="font-normal text-gray-600">
+                      <span class="font-normal text-purpleC dark:text-purpleLightC">
                         Click to upload image
                       </span>
                     </div>
@@ -121,9 +127,13 @@ const STORY = () => {
                 type="file"
               />
             </label>
+            <button className="btn mx-2 mt-3 rounded-2xl bg-purpleC text-white font-normal dark:bg-purpleLightC">
+              Share Now
+            </button>
           </div>
         </dialog>
       </div>
+      <progress className="progress w-full"></progress>
     </div>
   );
 };
