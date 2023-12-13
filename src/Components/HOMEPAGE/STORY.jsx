@@ -11,15 +11,17 @@ import { MdOutlineCancel } from "react-icons/md";
 
 const STORY = () => {
   const [usersStory, setUsersStory] = useState([]);
+  const { user } = useAuth();
   const userStoryImage = () => {
     fetch(`/api/Story?email=${user?.email}`)
       .then((res) => res.json())
       .then((data) => setUsersStory(data));
   };
-  const { user } = useAuth();
   useEffect(() => {
-    userStoryImage();
-  }, [userStoryImage]);
+    fetch(`/api/Story?email=${user?.email}`)
+      .then((res) => res.json())
+      .then((data) => setUsersStory(data));
+  }, [user]);
 
   let today = new Date();
   let date =
@@ -172,8 +174,8 @@ const STORY = () => {
               class={`${
                 storyImage
                   ? ""
-                  : " shadow-[0px_48px_35px_-48px_rgba(0,0,0,0.1)] lg:max-w-[700px] md:mx-auto  rounded-[10px] dark:border-grayC border-2 border-dashed border-[#cacaca] dark:bg-secondaryBgDark bg-white mx-5"
-              } min-h-[70vh] md:min-w-[600px] xl:w-[900px] lg:w-[800px] max-h-[75vh] min-w-[290px] flex flex-col  mt-3 gap-5 cursor-pointer items-center justify-center  `}
+                  : " shadow-[0px_48px_35px_-48px_rgba(0,0,0,0.1)] lg:max-w-[700px] md:mx-auto  rounded-[10px]  mx-5"
+              } min-h-[70vh] md:min-w-[600px] xl:w-[900px] lg:w-[800px] max-h-[70vh] min-w-[290px] flex flex-col  mt-3 gap-5 cursor-pointer items-center justify-center  `}
             >
               <div class="flex items-center justify-center h-full w-full  object-cover">
                 {storyImage?.length > 0 ? (
@@ -228,7 +230,7 @@ const STORY = () => {
             </label>
             <button
               onClick={handleShareImg}
-              className="btn mx-2 mt-3 rounded-2xl bg-purpleC lg:relative w-[150px] xl:left-[240px] text-white font-normal  dark:bg-purpleLightC"
+              className="btn mx-2 mt-[2px] rounded-2xl bg-purpleC lg:relative w-[150px] xl:left-[240px] text-white font-normal  dark:bg-purpleLightC"
             >
               Share Now
             </button>
