@@ -6,7 +6,7 @@ import useUser from "@/hooks/useUser";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaShareAlt } from "react-icons/fa";
 import { MdOutlineCancel } from "react-icons/md";
 
 const STORY = () => {
@@ -154,19 +154,19 @@ const STORY = () => {
 
         {/* story post modal */}
         <dialog id="my_modal_Story" className="modal bg-black bg-opacity-25">
-          <div className="min-h-screen bg-white  dark:bg-primaryBgDark flex justify-center flex-col min-w-full lg:items-center rounded-md ">
+          <div className="min-h-screen bg-white  dark:bg-primaryBgDark flex justify-center flex-col min-w-full items-center rounded-md ">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
               <button
                 onClick={() => setStoryImage("")}
-                className="btn btn-sm btn-circle text-center flex items-center z-20 justify-center bg-purpleLightC btn-ghost absolute text-white right-2 top-2"
+                className="btn btn-sm btn-circle text-center flex items-center  z-20 justify-center bg-purpleLightC btn-ghost absolute text-white right-4 top-4"
               >
                 <>
                   <MdOutlineCancel />
                 </>
               </button>
             </form>
-            <h3 className="font-bold mt-2 flex justify-center mb-10 z-10 text-xl text-purpleC dark:text-purpleLightC">
+            <h3 className="font-bold mt-2 flex justify-center  z-10 text-xl text-purpleC dark:text-purpleLightC">
               Add Story
             </h3>
             <label
@@ -192,7 +192,7 @@ const STORY = () => {
                       viewBox="0 0 24 24"
                       fill=""
                       xmlns="http://www.w3.org/2000/svg"
-                      class="h-20  dark:fill-purpleLightC fill-purpleC"
+                      class="h-24 w-full flex items-center justify-center dark:fill-purpleLightC fill-purpleC"
                     >
                       <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                       <g
@@ -230,9 +230,10 @@ const STORY = () => {
             </label>
             <button
               onClick={handleShareImg}
-              className="btn mx-2 mt-[2px] rounded-2xl bg-purpleC lg:relative w-[150px] xl:left-[240px] text-white font-normal  dark:bg-purpleLightC"
+              className="md:px-6 px-4 py-2 bg-purpleC dark:bg-purpleLightC rounded-[1.5rem] flex justify-center mx-auto w-[80px] md:w-[150px] items-center  text-white"
             >
-              Share Now
+              <FaShareAlt /> &nbsp;{" "}
+              <span className="hidden md:block">Share</span>
             </button>
           </div>
         </dialog>
