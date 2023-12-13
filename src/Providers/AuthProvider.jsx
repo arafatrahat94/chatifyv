@@ -10,6 +10,7 @@ import {
   signOut,
 } from "firebase/auth";
 import app from "@/Firebase/firebase.config";
+import { useQuery } from "@tanstack/react-query";
 export const AuthContextProvider = createContext(null);
 
 const auth = getAuth(app);
@@ -40,7 +41,14 @@ const AuthProvider = ({ children }) => {
   };
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (CurrenUser) => {
-      setUser(CurrenUser);
+      if (CurrenUser?.email) {
+        fetch(`http://localhost:3000/api/NewUser?email=${CurrenUser?.email}`)
+          .then((res) => res.json())
+          .then((data) => setUser(data));
+      } else {
+        setUser(null);
+      }
+
       setLoading(false);
     });
     return () => unsubscribe;
@@ -53,6 +61,7 @@ const AuthProvider = ({ children }) => {
     forgotPass,
     user,
     logOut,
+    setLoading,
   };
   return (
     <AuthContextProvider.Provider value={authData}>

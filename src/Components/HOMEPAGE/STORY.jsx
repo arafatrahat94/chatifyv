@@ -1,6 +1,7 @@
 "use client";
 
 import Dynamicimage from "@/Utilities/DynamicImage";
+import useAuth from "@/hooks/useAuth";
 import Image from "next/image";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
@@ -13,6 +14,7 @@ const STORY = () => {
       setStoryImage(URL.createObjectURL(event.target.files[0]));
     }
   };
+  const { user } = useAuth();
   return (
     <div className=" mt-3 ">
       <h1 className="font-bold text-purpleLightC text-xl">Home</h1>
@@ -20,8 +22,11 @@ const STORY = () => {
       <div className="flex my-[.5rem]">
         {/*TODO: this will be available if user is logged in  */}
         <div
+          style={{ backgroundImage: `url(${user?.profileImg})` }}
           onClick={() => document.getElementById("my_modal_Story").showModal()}
-          className="cursor-pointer h-[150px] w-[100px] md:w-[130px] md:h-[200px] bg-purpleLightC rounded-lg mx-1 flex-shrink-0  justify-center items-center flex"
+          className="cursor-pointer h-[150px] w-[100px] md:w-[130px]
+          md:h-[200px] rounded-lg mx-1 flex-shrink-0
+          justify-center items-center flex"
         >
           <h1 className="flex justify-center items-center flex-col w-[44px] font-semibold text-center text-white">
             {" "}

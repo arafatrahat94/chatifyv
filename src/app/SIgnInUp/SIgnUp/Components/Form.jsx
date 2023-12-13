@@ -13,7 +13,7 @@ import { MdOutlineCancel } from "react-icons/md";
 
 const FormComponent = ({ signLoading, setSignLoaing }) => {
   const [showPassword, setShowPassword] = useState(false);
-  const { createU, glog } = useAuth();
+  const { createU, glog, user } = useAuth();
 
   const {
     register,
@@ -23,8 +23,17 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
     formState: { errors },
   } = useForm();
   const [errorMsg, setError] = useState("");
+
   const onSubmit = (data) => {
     const { userName, userId, email, Pass, ConfirmPass } = data;
+    console.log(data);
+    const newData = {
+      userName,
+      userId,
+      email,
+      profileImg: "",
+      coverImg: "",
+    };
 
     if (Pass !== ConfirmPass) {
       setError("Password does not match");
@@ -32,10 +41,20 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
     } else {
       setSignLoaing(true);
       createU(email, Pass)
-        .then((res) => {
-          setSignLoaing(false);
+        .then(async (res) => {
           reset();
-          return document.getElementById("my_modal_3").showModal();
+          const post = await fetch("/api/NewUser", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newData),
+          });
+          const response = await post.json();
+          if (response.status === 200) {
+            setSignLoaing(false);
+            return document.getElementById("my_modal_3").showModal();
+          }
         })
         .catch((err) => {
           setError(err.message.split("Firebase:").join(""));
@@ -51,10 +70,26 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
   const handleGlogin = () => {
     setSignLoaing(true);
     glog()
-      .then((res) => {
-        setSignLoaing(false);
-
-        return document.getElementById("my_modal_3").showModal();
+      .then(async (res) => {
+        const newData2 = {
+          userName: user?.displayName,
+          userId: `@${user?.email}`,
+          email: user?.email,
+          profileImg: user?.photoURL,
+          coverImg: "",
+        };
+        const post = await fetch("/api/NewUser", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newData2),
+        });
+        const response = await post.json();
+        if (response) {
+          setSignLoaing(false);
+          return document.getElementById("my_modal_3").showModal();
+        }
       })
       .catch((err) => {
         setError(err.message.split("Firebase:").join(""));

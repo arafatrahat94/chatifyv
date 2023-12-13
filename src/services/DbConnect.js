@@ -15,7 +15,7 @@ const DbConnect = async () => {
         deprecationErrors: true,
       },
     });
-    db = await client.db("chatify");
+    db = client.db("chatify");
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
