@@ -2,40 +2,137 @@
 
 import Dynamicimage from "@/Utilities/DynamicImage";
 import useAuth from "@/hooks/useAuth";
+import useUser from "@/hooks/useUser";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import { FaPlus } from "react-icons/fa";
 import { MdOutlineCancel } from "react-icons/md";
 
 const STORY = () => {
+  const [usersStory, setUsersStory] = useState([]);
+  const userStoryImage = () => {
+    fetch(`/api/Story?email=${user?.email}`)
+      .then((res) => res.json())
+      .then((data) => setUsersStory(data));
+  };
+  const { user } = useAuth();
+  useEffect(() => {
+    userStoryImage();
+  }, [userStoryImage]);
+
+  let today = new Date();
+  let date =
+    today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+  let time =
+    today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  let dateTime = date + " " + time;
+  const imgHostingUrl = `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMG_KEY}`;
+  const formData = new FormData();
+
   const [storyImage, setStoryImage] = useState("");
+  const [storyShare, setStoryShare] = useState(null);
+  // formData.append("image", event.target.files[0]);
   const onImageChange = (event) => {
     console.log(event.target.files);
+    setStoryShare(event.target.files);
+
     if (event.target.files && event.target.files[0]) {
       setStoryImage(URL.createObjectURL(event.target.files[0]));
     }
   };
 
-  const { user } = useAuth();
+  const [shareStoryLoading, setShareStoryLoading] = useState(false);
+  const handleShareImg = () => {
+    setShareStoryLoading(true);
+    document.getElementById("my_modal_Story").close();
+    console.log(storyShare[0]);
+    formData.append("image", storyShare[0]);
+
+    fetch(imgHostingUrl, {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((idata) => {
+        const newData = {
+          email: user?.email,
+          profileId: user?._id,
+          profileImg: user?.profileImg,
+          name: user?.name,
+          storyImage: idata.data.display_url,
+          uploadedOn: dateTime,
+        };
+        fetch("/api/Story", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newData),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            userStoryImage();
+            setStoryImage("");
+            toast.success("Story Shared");
+            setShareStoryLoading(false);
+          });
+      });
+  };
   return (
     <div className=" mt-3 ">
       <h1 className="font-bold text-purpleLightC text-xl">Home</h1>
 
       <div className="flex my-[.5rem]">
         {/*TODO: this will be available if user is logged in  */}
-        <div
-          style={{ backgroundImage: `url(${user?.profileImg})` }}
-          onClick={() => document.getElementById("my_modal_Story").showModal()}
-          className="cursor-pointer h-[150px] w-[100px] md:w-[130px]
+        {user && (
+          <div
+            style={{ backgroundImage: `url(${user?.profileImg})` }}
+            onClick={() =>
+              document.getElementById("my_modal_Story").showModal()
+            }
+            className={`${
+              !user && "hidden"
+            }cursor-pointer h-[150px] w-[100px] md:w-[130px]
           md:h-[200px] rounded-lg mx-1 flex-shrink-0
-          justify-center items-center flex"
-        >
-          <h1 className="flex justify-center items-center flex-col w-[44px] font-semibold text-center text-white">
-            {" "}
-            <FaPlus />
-            Add Story
-          </h1>
-        </div>
+          justify-center items-center flex`}
+          >
+            <h1 className="flex justify-center items-center flex-col w-[44px] font-semibold text-center text-white">
+              {" "}
+              <FaPlus />
+              Add Story
+            </h1>
+          </div>
+        )}
+        {/* user story image */}
+        {user && (
+          <div className="h-[150px] w-[100px] md:w-[130px] md:h-[200px]  rounded-lg mx-1 flex-shrink-0  justify-center items-center flex">
+            {/*TODO: this will be dynamic loaded from the server of all stories */}
+            <div
+              style={{
+                backgroundImage: `url(${
+                  usersStory?.length > 0 ? usersStory[0].storyImage : ""
+                })`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+              }}
+              className="object-cover h-full w-full rounded-lg flex flex-col justify-between"
+            >
+              <div className="h-[40px] w-[40px]  m-1 rounded-full">
+                <Image
+                  src={user?.profileImg}
+                  className="rounded-full w-full h-full object-cover object-center "
+                  alt="profile image"
+                  width={500}
+                  height={500}
+                ></Image>
+              </div>
+              <h1 className="mx-2 pb-2  text-white">{user?.userName}</h1>
+            </div>
+          </div>
+        )}
         <div className="h-[150px] w-[100px] md:w-[130px] md:h-[200px]  rounded-lg mx-1 flex-shrink-0  justify-center items-center flex">
           {/*TODO: this will be dynamic loaded from the server of all stories */}
           <div
@@ -55,19 +152,19 @@ const STORY = () => {
 
         {/* story post modal */}
         <dialog id="my_modal_Story" className="modal bg-black bg-opacity-25">
-          <div className="min-h-screen bg-white  dark:bg-primaryBgDark min-w-full  rounded-md ">
+          <div className="min-h-screen bg-white  dark:bg-primaryBgDark flex justify-center flex-col min-w-full lg:items-center rounded-md ">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
               <button
                 onClick={() => setStoryImage("")}
-                className="btn btn-sm btn-circle text-center flex items-center justify-center bg-purpleLightC btn-ghost absolute text-white right-2 top-2"
+                className="btn btn-sm btn-circle text-center flex items-center z-20 justify-center bg-purpleLightC btn-ghost absolute text-white right-2 top-2"
               >
                 <>
                   <MdOutlineCancel />
                 </>
               </button>
             </form>
-            <h3 className="font-bold flex justify-center mt-10 z-40 text-xl text-purpleC dark:text-purpleLightC">
+            <h3 className="font-bold mt-2 flex justify-center mb-10 z-10 text-xl text-purpleC dark:text-purpleLightC">
               Add Story
             </h3>
             <label
@@ -75,15 +172,15 @@ const STORY = () => {
               class={`${
                 storyImage
                   ? ""
-                  : " shadow-[0px_48px_35px_-48px_rgba(0,0,0,0.1)]  rounded-[10px] dark:border-grayC border-2 border-dashed border-[#cacaca] dark:bg-secondaryBgDark bg-white mx-5"
-              } min-h-[78vh] max-h-[78vh] min-w-[290px] flex flex-col  mt-3 gap-5 cursor-pointer items-center justify-center  `}
+                  : " shadow-[0px_48px_35px_-48px_rgba(0,0,0,0.1)] lg:max-w-[700px] md:mx-auto  rounded-[10px] dark:border-grayC border-2 border-dashed border-[#cacaca] dark:bg-secondaryBgDark bg-white mx-5"
+              } min-h-[70vh] md:min-w-[600px] xl:w-[900px] lg:w-[800px] max-h-[75vh] min-w-[290px] flex flex-col  mt-3 gap-5 cursor-pointer items-center justify-center  `}
             >
               <div class="flex items-center justify-center h-full w-full  object-cover">
-                {storyImage.length > 0 ? (
+                {storyImage?.length > 0 ? (
                   <Image
                     src={storyImage}
                     alt=""
-                    className="w-full max-h-[80vh] md:object-scale-down object-cover h-full "
+                    className="w-full max-h-[80vh] md:object-scale-down flex items-center justify-center object-contain h-full "
                     width={100}
                     height={100}
                   ></Image>
@@ -119,21 +216,32 @@ const STORY = () => {
                 )}
               </div>
 
-              <input
-                onChange={onImageChange}
-                id="file"
-                name="Inpfile"
-                class="hidden z-1"
-                type="file"
-              />
+              <form>
+                <input
+                  onChange={onImageChange}
+                  id="file"
+                  name="Inpfile"
+                  class="hidden z-1"
+                  type="file"
+                />
+              </form>
             </label>
-            <button className="btn mx-2 mt-3 rounded-2xl bg-purpleC text-white font-normal dark:bg-purpleLightC">
+            <button
+              onClick={handleShareImg}
+              className="btn mx-2 mt-3 rounded-2xl bg-purpleC lg:relative w-[150px] xl:left-[240px] text-white font-normal  dark:bg-purpleLightC"
+            >
               Share Now
             </button>
           </div>
         </dialog>
       </div>
-      <progress className="progress w-full"></progress>
+      {shareStoryLoading && <progress className="progress w-full"></progress>}
+      <Toaster
+        toastOptions={{
+          className: "bg-toast",
+        }}
+        position="bottom-center"
+      />
     </div>
   );
 };

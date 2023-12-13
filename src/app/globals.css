@@ -395,3 +395,13 @@
     );
   }
 }
+
+/* story loading */
+.progress:indeterminate {
+  --progress-color: #5858fa !important;
+}
+
+/* toast  */
+.bg-toast {
+  @apply dark:bg-secondaryBgDark bg-secondaryBgLight text-purpleC dark:text-purpleLightC !important;
+}
