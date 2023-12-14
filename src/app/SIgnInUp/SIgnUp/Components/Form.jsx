@@ -10,6 +10,8 @@ import useAuth from "@/hooks/useAuth";
 import { useForm } from "react-hook-form";
 import ComponentLoader from "@/Utilities/ComponentLoader";
 import { MdOutlineCancel } from "react-icons/md";
+import CustomToast from "@/Components/CustomizedToast/CustomToast";
+import toast from "react-hot-toast";
 
 const FormComponent = ({ signLoading, setSignLoaing }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -36,8 +38,7 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
     };
 
     if (Pass !== ConfirmPass) {
-      setError("Password does not match");
-      return document.getElementById("my_modal_4").showModal();
+      toast.error("Password does not match");
     } else {
       setSignLoaing(true);
       createU(email, Pass)
@@ -51,20 +52,16 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
             body: JSON.stringify(newData),
           });
           const response = await post.json();
-          if (response.status === 200) {
+          if (response) {
             setSignLoaing(false);
-            return document.getElementById("my_modal_3").showModal();
+            toast.success("User Created");
           }
         })
         .catch((err) => {
-          setError(err.message.split("Firebase:").join(""));
+          toast.error(err.message.split("Firebase:").join(""));
           setSignLoaing(false);
-          console.log(err);
-          return document.getElementById("my_modal_CLick").click();
         });
     }
-    // setSignLoaing(true);
-    // document.getElementById("my_modal_3").showModal();
   };
 
   const handleGlogin = () => {
@@ -88,15 +85,12 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
         const response = await post.json();
         if (response) {
           setSignLoaing(false);
-          return document.getElementById("my_modal_3").showModal();
+          toast.success("User Created");
         }
-        console.log(res);
       })
       .catch((err) => {
-        setError(err.message.split("Firebase:").join(""));
         setSignLoaing(false);
-        console.log(err);
-        return document.getElementById("my_modal_CLick").click();
+        toast.error(err.message.split("Firebase:").join(""));
       });
   };
   return (
@@ -177,30 +171,34 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
               Password
             </label>
             <div className="relative">
-              <input
-                {...register("Pass", { required: true })}
-                type={showPassword ? "text" : "password"}
-                placeholder="pAssw0rd"
-                className="h-[42px] border border-grayC dark:bg-secondaryBgDark border-opacity-30 bg-secondaryBgLight rounded-md focus:outline-none w-full px-4"
-                id="password"
-              />
+              <div className="relative">
+                {" "}
+                <input
+                  {...register("Pass", { required: true })}
+                  type={showPassword ? "text" : "password"}
+                  placeholder="pAssw0rd"
+                  className="h-[42px] border border-grayC dark:bg-secondaryBgDark border-opacity-30 bg-secondaryBgLight rounded-md focus:outline-none w-full px-4"
+                  id="password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-xl font-bold text-grayC absolute right-3 top-1/2 dark:text-purpleLightC -translate-y-1/2"
+                >
+                  {showPassword !== false ? (
+                    <IoEyeOutline />
+                  ) : (
+                    <IoEyeOffOutline />
+                  )}
+                </button>
+              </div>
+
               {errors.Pass && (
-                <span className="text-red-500  text-sm">
+                <div className="text-red-500 absolute text-sm">
                   {" "}
                   ! This field is required
-                </span>
+                </div>
               )}
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="text-xl font-bold text-grayC absolute right-3 top-1/2 dark:text-purpleLightC -translate-y-1/2"
-              >
-                {showPassword !== false ? (
-                  <IoEyeOutline />
-                ) : (
-                  <IoEyeOffOutline />
-                )}
-              </button>
             </div>
           </div>
           <div className="flex gap-y-2 flex-col mb-[23px]">
@@ -211,30 +209,32 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
               Confirm Password
             </label>{" "}
             <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                {...register("ConfirmPass", { required: true })}
-                placeholder="pAssw0rd"
-                className="h-[42px] border border-grayC border-opacity-30 bg-secondaryBgLight rounded-md focus:outline-none dark:bg-secondaryBgDark w-full px-4"
-                id="confirmPassword"
-              />{" "}
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  {...register("ConfirmPass", { required: true })}
+                  placeholder="pAssw0rd"
+                  className="h-[42px] border border-grayC border-opacity-30 bg-secondaryBgLight rounded-md focus:outline-none dark:bg-secondaryBgDark w-full px-4"
+                  id="confirmPassword"
+                />{" "}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-xl font-bold text-grayC absolute right-3 top-1/2 dark:text-purpleLightC -translate-y-1/2"
+                >
+                  {showPassword !== false ? (
+                    <IoEyeOutline />
+                  ) : (
+                    <IoEyeOffOutline />
+                  )}{" "}
+                </button>
+              </div>
               {errors.ConfirmPass && (
-                <span className="text-red-500  text-sm">
+                <span className="text-red-500 absolute text-sm">
                   {" "}
                   ! This field is required
                 </span>
               )}
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="text-xl font-bold text-grayC absolute right-3 top-1/2 dark:text-purpleLightC -translate-y-1/2"
-              >
-                {showPassword !== false ? (
-                  <IoEyeOutline />
-                ) : (
-                  <IoEyeOffOutline />
-                )}
-              </button>
             </div>
           </div>
           <div className="flex justify-items-start  mb-[23px]">
@@ -278,54 +278,8 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
             Sign up with google
           </button>
         </div>
-        {/* You can open the modal using document.getElementById('ID').showModal() method */}
-        <button
-          id="my_modal_CLick"
-          className=""
-          onClick={() => document.getElementById("my_modal_4").showModal()}
-        ></button>
-        <dialog id="my_modal_4" className="modal bg-black bg-opacity-25">
-          <div className="modal-box  dark:bg-grayC max-w-[450px] rounded-md ">
-            <form method="dialog">
-              {/* if there is a button in form, it will close the modal */}
-              <button className="btn btn-sm btn-circle text-center flex items-center justify-center bg-purpleLightC btn-ghost absolute text-white right-2 top-2">
-                <>
-                  <MdOutlineCancel />
-                </>
-              </button>
-            </form>
-            <h3 className="font-bold flex justify-center mt-10 scale-75 text-lg">
-              <div class="loader23">
-                <span>ERROR</span>
-                <span>ERROR</span>
-              </div>
-            </h3>
-            <p className="py-4 text-center font-bold text-purpleLightC mt-4 uppercase">
-              {errorMsg}
-            </p>
-          </div>
-        </dialog>
-        <dialog id="my_modal_3" className="modal bg-black bg-opacity-25">
-          <div className="modal-box  dark:bg-grayC max-w-[400px] rounded-md ">
-            <form method="dialog">
-              {/* if there is a button in form, it will close the modal */}
-              <button className="btn btn-sm btn-circle text-center flex items-center justify-center bg-purpleLightC btn-ghost absolute text-white right-2 top-2">
-                <>
-                  <MdOutlineCancel />
-                </>
-              </button>
-            </form>
-            <h3 className="font-bold flex justify-center mt-10 scale-75 text-lg">
-              <div class="loader23">
-                <span>SUCCESS</span>
-                <span>SUCCESS</span>
-              </div>
-            </h3>
-            <p className="py-4 text-xl text-center font-bold text-purpleLightC mt-4 uppercase">
-              &#34; New User Created &#34;{" "}
-            </p>
-          </div>
-        </dialog>
+
+        <CustomToast />
       </div>
     </div>
   );

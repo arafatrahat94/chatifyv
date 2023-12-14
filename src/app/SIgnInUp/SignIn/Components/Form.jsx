@@ -10,6 +10,8 @@ import useAuth from "@/hooks/useAuth";
 import { useForm } from "react-hook-form";
 import ComponentLoader from "@/Utilities/ComponentLoader";
 import { MdOutlineCancel } from "react-icons/md";
+import CustomToast from "@/Components/CustomizedToast/CustomToast";
+import toast from "react-hot-toast";
 
 const FormComponent = ({ signLoading, setSignLoaing }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -23,7 +25,7 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
     reset,
     formState: { errors },
   } = useForm();
-  const [errorMsg, setError] = useState("");
+
   const email = watch("email");
   const onSubmit = (data) => {
     let { email, Pass } = data;
@@ -40,17 +42,15 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
           reset();
           setInitialEmail(null);
           setInitialPass(null);
-          return document.getElementById("my_modal_3").showModal();
+          toast.success("User Signed In");
         })
         .catch((err) => {
-          setError(err.message.split("Firebase:").join(""));
           setSignLoaing(false);
-          console.log(err);
-          return document.getElementById("my_modal_CLick").click();
+
+          toast.error(err.message.split("Firebase:").join(""));
         });
     } else {
-      setError("Please enter email and password");
-      return document.getElementById("my_modal_CLick").click();
+      return toast.error("Please enter email and password");
     }
   };
 
@@ -60,13 +60,12 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
       .then((res) => {
         setSignLoaing(false);
 
-        return document.getElementById("my_modal_3").showModal();
+        return toast.success("User Signed In");
       })
       .catch((err) => {
-        setError(err.message.split("Firebase:").join(""));
         setSignLoaing(false);
-        console.log(err);
-        return document.getElementById("my_modal_CLick").click();
+
+        return toast.error(err.message.split("Firebase:").join(""));
       });
   };
 
@@ -236,76 +235,8 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
             Sign In with google
           </button>
         </div>
-        {/* You can open the modal using document.getElementById('ID').showModal() method */}
-        <button
-          id="my_modal_CLick"
-          className=""
-          onClick={() => document.getElementById("my_modal_4").showModal()}
-        ></button>
-        <dialog id="my_modal_4" className="modal bg-black bg-opacity-25">
-          <div className="modal-box  dark:bg-primaryBgDark max-w-[450px] rounded-md ">
-            <form method="dialog">
-              {/* if there is a button in form, it will close the modal */}
-              <button className="btn btn-sm btn-circle text-center flex items-center justify-center bg-purpleLightC btn-ghost absolute text-white right-2 top-2">
-                <>
-                  <MdOutlineCancel />
-                </>
-              </button>
-            </form>
-            <h3 className="font-bold flex justify-center mt-10 scale-75 text-lg">
-              <div class="loader23">
-                <span>ERROR</span>
-                <span>ERROR</span>
-              </div>
-            </h3>
-            <p className="py-4 text-center font-bold text-purpleLightC mt-4 uppercase">
-              {errorMsg}
-            </p>
-          </div>
-        </dialog>
-        <dialog id="my_modal_3" className="modal bg-black bg-opacity-25">
-          <div className="modal-box  dark:bg-primaryBgDark  max-w-[400px] rounded-md ">
-            <form method="dialog">
-              {/* if there is a button in form, it will close the modal */}
-              <button className="btn btn-sm btn-circle text-center flex items-center justify-center bg-purpleLightC btn-ghost absolute text-white right-2 top-2">
-                <>
-                  <MdOutlineCancel />
-                </>
-              </button>
-            </form>
-            <h3 className="font-bold flex justify-center mt-10 scale-75 text-lg">
-              <div class="loader23">
-                <span>SUCCESS</span>
-                <span>SUCCESS</span>
-              </div>
-            </h3>
-            <p className="py-4 text-xl text-center font-bold text-purpleLightC mt-4 uppercase">
-              &#34; welcome back user &#34;{" "}
-            </p>
-          </div>
-        </dialog>
-        <dialog id="my_modal_5" className="modal bg-black bg-opacity-25">
-          <div className="modal-box  dark:bg-primaryBgDark max-w-[400px] rounded-md ">
-            <form method="dialog">
-              {/* if there is a button in form, it will close the modal */}
-              <button className="btn btn-sm btn-circle text-center flex items-center justify-center bg-purpleLightC btn-ghost absolute text-white right-2 top-2">
-                <>
-                  <MdOutlineCancel />
-                </>
-              </button>
-            </form>
-            <h3 className="font-bold flex justify-center mt-10 scale-75 text-lg">
-              <div class="loader23">
-                <span>SUCCESS</span>
-                <span>SUCCESS</span>
-              </div>
-            </h3>
-            <p className="py-4 text-xl text-center font-bold text-purpleLightC mt-4 uppercase">
-              &#34; Password reset link emailed &#34;{" "}
-            </p>
-          </div>
-        </dialog>
       </div>
+      <CustomToast />
     </div>
   );
 };

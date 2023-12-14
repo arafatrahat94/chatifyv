@@ -13,7 +13,7 @@ const STORY = () => {
   let [usersStory, setUsersStory] = useState(null);
   // let [storyArray, setStoryArray] = useState([]);
   let storyArray = useMemo(() => [], []);
-
+  const [allStory, setAllStory] = useState(null);
   const { user } = useAuth();
   useEffect(() => {
     fetch(`/api/Story?email=${user?.email}`)
@@ -35,8 +35,23 @@ const STORY = () => {
           }
         }
       });
+
+    fetch(`/api/Story`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (user) {
+          const filterinN = data.filter(
+            (x) => x.profileId !== usersStory?.profileId
+          );
+          setAllStory(filterinN);
+        }
+        if (!user) {
+          setAllStory(data);
+        }
+      });
   }, [user, storyArray]);
-  console.log(usersStory);
+
+  console.log(allStory);
   const imgHostingUrl = `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMG_KEY}`;
   const formData = new FormData();
 
@@ -114,7 +129,7 @@ const STORY = () => {
     <div className=" mt-3 ">
       <h1 className="font-bold text-purpleLightC text-xl">Home</h1>
 
-      <div className="flex my-[.5rem]">
+      <div className="flex my-[.5rem] overflow-scroll no-scrollbar">
         {/*TODO: this will be available if user is logged in  */}
         {user && (
           <div
@@ -162,21 +177,35 @@ const STORY = () => {
             </div>
           </div>
         )}
-        <div className="h-[150px] w-[100px] md:w-[130px] md:h-[200px]  rounded-lg mx-1 flex-shrink-0  justify-center items-center flex">
-          {/*TODO: this will be dynamic loaded from the server of all stories */}
-          <div
-            style={{
-              backgroundImage:
-                'url("https://i.ibb.co/r4zvHSR/aruffffffa-electric-substation-in-brazil-4455d8d6-4ac9-4001-9225-3e6304fb03ed.png")',
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-            }}
-            className="object-cover h-full w-full rounded-lg flex flex-col justify-between"
-          >
-            <div className="h-[40px] w-[40px] bg-blue-400 m-1 rounded-full"></div>
-            <h1 className="mx-2 pb-2  text-white">Person name</h1>
-          </div>
+        <div>
+          {allStory.map((y) => (
+            <>
+              <div className="h-[150px] w-[100px] md:w-[130px] md:h-[200px]  rounded-lg mx-1 flex-shrink-0  justify-center items-center flex">
+                {/*TODO: this will be dynamic loaded from the server of all stories */}
+                <div
+                  style={{
+                    backgroundImage: `url(${y?.storyImage[0]})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                  }}
+                  className="object-cover h-full w-full rounded-lg flex flex-col justify-between"
+                >
+                  <div className="h-[40px] w-[40px] m-1 rounded-full">
+                    {" "}
+                    <Image
+                      src={y?.profileImg}
+                      className="rounded-full w-full h-full object-cover object-center "
+                      alt="profile image"
+                      width={500}
+                      height={500}
+                    ></Image>
+                  </div>
+                  <h1 className="mx-2 pb-2  text-white">{y?.name}</h1>
+                </div>
+              </div>
+            </>
+          ))}
         </div>
 
         {/* story post modal */}
