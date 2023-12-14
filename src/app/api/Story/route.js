@@ -26,8 +26,12 @@ export const GET = async (req) => {
   const query = searchParams.get("email");
   if (query) {
     const res = await storyCollection.findOne({ email: query });
+    const res2 = await storyCollection.find({}).toArray();
+    const filter = res2.filter((x) => x.email !== query);
     if (res) {
-      return new NextResponse(JSON.stringify(res));
+      return new NextResponse(
+        JSON.stringify({ signedEmail: res, allUser: filter })
+      );
     } else {
       return new NextResponse(JSON.stringify(null));
     }

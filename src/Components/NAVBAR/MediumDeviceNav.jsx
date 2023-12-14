@@ -19,6 +19,8 @@ import Suggestion from "../SUGGESTION/Suggestion/Suggestion";
 import useAuth from "@/hooks/useAuth";
 import { TbLogout } from "react-icons/tb";
 import { HiOutlineLogin } from "react-icons/hi";
+import toast from "react-hot-toast";
+import CustomToast from "../CustomizedToast/CustomToast";
 const MediumDeviceNav = () => {
   const { user, logOut } = useAuth();
   const [confirmRoute, setConfirmRoute] = useState("");
@@ -67,11 +69,10 @@ const MediumDeviceNav = () => {
   const logOutHandler = () => {
     logOut()
       .then(() => {
-        return document.getElementById("my_modal_3").showModal();
+        return toast.success("User Signed Out");
       })
       .catch((err) => {
-        setError(err.message.split("Firebase:").join(""));
-        return document.getElementById("my_modal_4").showModal();
+        toast.error(err.message.split("Firebase:").join(""));
       });
   };
   const logoutConfirm = () => {
@@ -210,50 +211,7 @@ const MediumDeviceNav = () => {
           </p>
         </div>
       </dialog>
-      {/* logout handler modal*/}
-      <dialog id="my_modal_3" className="modal bg-black bg-opacity-25">
-        <div className="modal-box  dark:bg-primaryBgDark max-w-[400px] rounded-md ">
-          <form method="dialog">
-            {/* if there is a button in form, it will close the modal */}
-            <button className="btn btn-sm btn-circle text-center flex items-center justify-center bg-purpleLightC btn-ghost absolute text-white right-2 top-2">
-              <>
-                <MdOutlineCancel />
-              </>
-            </button>
-          </form>
-          <h3 className="font-bold flex justify-center mt-10 scale-75 text-lg">
-            <div class="loader23">
-              <span>SUCCESS</span>
-              <span>SUCCESS</span>
-            </div>
-          </h3>
-          <p className="py-4 text-xl text-center font-bold text-purpleLightC mt-4 uppercase">
-            &#34; User Signed Out &#34;{" "}
-          </p>
-        </div>
-      </dialog>
-      {/* logout error handler modal*/}
-      <dialog id="my_modal_4" className="modal bg-black bg-opacity-25">
-        <div className="modal-box   dark:bg-primaryBgDark max-w-[400px] rounded-md ">
-          <form method="dialog">
-            {/* if there is a button in form, it will close the modal */}
-            <button className="btn btn-sm btn-circle text-center flex items-center justify-center bg-purpleLightC btn-ghost absolute text-white right-2 top-2">
-              <>
-                <MdOutlineCancel />
-              </>
-            </button>
-          </form>
-          <h3 className="font-bold flex justify-center mt-10 scale-75 text-lg">
-            <div class="loader23">
-              <span>ERROR</span>
-              <span>ERROR</span>
-            </div>
-          </h3>
-          <p className="py-4 text-xl text-center font-bold text-purpleLightC mt-4 uppercase">
-            &#34; {error} &#34;{" "}
-          </p>
-        </div>
-      </dialog>
+      <CustomToast />
     </nav>
   );
 };

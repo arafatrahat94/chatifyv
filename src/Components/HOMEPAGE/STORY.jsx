@@ -1,14 +1,17 @@
 "use client";
 
+import app from "@/Firebase/firebase.config";
 import Dynamicimage from "@/Utilities/DynamicImage";
 import useAuth from "@/hooks/useAuth";
 import useUser from "@/hooks/useUser";
+import { onAuthStateChanged } from "firebase/auth";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { FaPlus, FaShareAlt } from "react-icons/fa";
 import { MdOutlineCancel } from "react-icons/md";
-
+import { getAuth } from "firebase/auth";
+const auth = getAuth(app);
 const STORY = () => {
   let [usersStory, setUsersStory] = useState(null);
   // let [storyArray, setStoryArray] = useState([]);
@@ -16,39 +19,41 @@ const STORY = () => {
   const [allStory, setAllStory] = useState(null);
   const { user } = useAuth();
   useEffect(() => {
-    fetch(`/api/Story?email=${user?.email}`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        if (data !== null) {
-          const { storyImage } = data;
-          setUsersStory(data);
-          if (storyImage !== undefined) {
-            const filtering = storyImage.filter(
-              (x) => x !== undefined || x !== null
-            );
-            filtering.map((y) => {
-              if (!storyArray.includes(y)) {
-                storyArray.push(y);
-              }
-            });
+    if (user) {
+      fetch(`/api/Story?email=${user?.email}`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          if (user && data !== null) {
+            const { storyImage } = data.signedEmail;
+            setAllStory(data.allUser);
+            setUsersStory(data.signedEmail);
+            if (storyImage !== undefined) {
+              const filtering = storyImage.filter(
+                (x) => x !== undefined || x !== null
+              );
+              filtering.map((y) => {
+                if (!storyArray.includes(y)) {
+                  storyArray.push(y);
+                }
+              });
+            }
           }
-        }
-      });
-
-    fetch(`/api/Story`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (user) {
-          const filterinN = data.filter(
-            (x) => x.profileId !== usersStory?.profileId
-          );
-          setAllStory(filterinN);
-        }
-        if (!user) {
-          setAllStory(data);
-        }
-      });
+          if (!user) {
+            setAllStory(data);
+          }
+        });
+    }
+    if (!user) {
+      fetch(`/api/Story`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          if (data !== null) {
+            setAllStory(data);
+          }
+        });
+    }
   }, [user, storyArray]);
 
   console.log(allStory);
@@ -99,13 +104,15 @@ const STORY = () => {
           body: JSON.stringify(newData),
         })
           .then((res) => res.json())
-          .then((data) => {
+          .then((data2) => {
             fetch(`/api/Story?email=${user?.email}`)
               .then((res) => res.json())
               .then((data) => {
-                if (data !== null) {
-                  const { storyImage } = data;
-                  setUsersStory(data);
+                console.log(data);
+                if (user && data !== null) {
+                  const { storyImage } = data.signedEmail;
+                  setAllStory(data.allUser);
+                  setUsersStory(data.signedEmail);
                   if (storyImage !== undefined) {
                     const filtering = storyImage.filter(
                       (x) => x !== undefined || x !== null
@@ -116,6 +123,9 @@ const STORY = () => {
                       }
                     });
                   }
+                }
+                if (!user) {
+                  setAllStory(data);
                 }
               });
             setStoryImage("");
@@ -177,8 +187,8 @@ const STORY = () => {
             </div>
           </div>
         )}
-        <div>
-          {allStory.map((y) => (
+        <div className="flex">
+          {allStory?.map((y) => (
             <>
               <div className="h-[150px] w-[100px] md:w-[130px] md:h-[200px]  rounded-lg mx-1 flex-shrink-0  justify-center items-center flex">
                 {/*TODO: this will be dynamic loaded from the server of all stories */}
