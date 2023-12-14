@@ -104,7 +104,7 @@ const STORY = () => {
           body: JSON.stringify(newData),
         })
           .then((res) => res.json())
-          .then((data2) => {
+          .then((data) => {
             fetch(`/api/Story?email=${user?.email}`)
               .then((res) => res.json())
               .then((data) => {
@@ -194,7 +194,9 @@ const STORY = () => {
                 {/*TODO: this will be dynamic loaded from the server of all stories */}
                 <div
                   style={{
-                    backgroundImage: `url(${y?.storyImage[0]})`,
+                    backgroundImage: `url(${
+                      y?.storyImage !== null && y?.storyImage[0]
+                    })`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
