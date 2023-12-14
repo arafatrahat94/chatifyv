@@ -72,10 +72,10 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
     glog()
       .then(async (res) => {
         const newData2 = {
-          userName: user?.displayName,
-          userId: `@${user?.email}`,
-          email: user?.email,
-          profileImg: user?.photoURL,
+          userName: res?.user?.displayName,
+          userId: `@${res.user?.displayName}`,
+          email: res?.user?.email,
+          profileImg: res?.user?.photoURL,
           coverImg: "",
         };
         const post = await fetch("/api/NewUser", {
@@ -90,6 +90,7 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
           setSignLoaing(false);
           return document.getElementById("my_modal_3").showModal();
         }
+        console.log(res);
       })
       .catch((err) => {
         setError(err.message.split("Firebase:").join(""));

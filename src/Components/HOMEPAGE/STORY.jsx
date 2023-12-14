@@ -4,31 +4,39 @@ import Dynamicimage from "@/Utilities/DynamicImage";
 import useAuth from "@/hooks/useAuth";
 import useUser from "@/hooks/useUser";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { FaPlus, FaShareAlt } from "react-icons/fa";
 import { MdOutlineCancel } from "react-icons/md";
 
 const STORY = () => {
-  const [usersStory, setUsersStory] = useState([]);
+  let [usersStory, setUsersStory] = useState(null);
+  // let [storyArray, setStoryArray] = useState([]);
+  let storyArray = useMemo(() => [], []);
+
   const { user } = useAuth();
-  const userStoryImage = () => {
-    fetch(`/api/Story?email=${user?.email}`)
-      .then((res) => res.json())
-      .then((data) => setUsersStory(data));
-  };
   useEffect(() => {
     fetch(`/api/Story?email=${user?.email}`)
       .then((res) => res.json())
-      .then((data) => setUsersStory(data));
-  }, [user]);
-
-  let today = new Date();
-  let date =
-    today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
-  let time =
-    today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-  let dateTime = date + " " + time;
+      .then((data) => {
+        console.log(data);
+        if (data !== null) {
+          const { storyImage } = data;
+          setUsersStory(data);
+          if (storyImage !== undefined) {
+            const filtering = storyImage.filter(
+              (x) => x !== undefined || x !== null
+            );
+            filtering.map((y) => {
+              if (!storyArray.includes(y)) {
+                storyArray.push(y);
+              }
+            });
+          }
+        }
+      });
+  }, [user, storyArray]);
+  console.log(usersStory);
   const imgHostingUrl = `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMG_KEY}`;
   const formData = new FormData();
 
@@ -57,16 +65,19 @@ const STORY = () => {
     })
       .then((res) => res.json())
       .then((idata) => {
+        if (idata.data?.display_url !== null) {
+          storyArray.unshift(idata.data.display_url);
+        }
         const newData = {
           email: user?.email,
           profileId: user?._id,
           profileImg: user?.profileImg,
-          name: user?.name,
-          storyImage: idata.data.display_url,
-          uploadedOn: dateTime,
+          name: user?.userName,
+          storyImage: storyArray,
         };
+
         fetch("/api/Story", {
-          method: "POST",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
@@ -74,14 +85,31 @@ const STORY = () => {
         })
           .then((res) => res.json())
           .then((data) => {
-            console.log(data);
-            userStoryImage();
+            fetch(`/api/Story?email=${user?.email}`)
+              .then((res) => res.json())
+              .then((data) => {
+                if (data !== null) {
+                  const { storyImage } = data;
+                  setUsersStory(data);
+                  if (storyImage !== undefined) {
+                    const filtering = storyImage.filter(
+                      (x) => x !== undefined || x !== null
+                    );
+                    filtering.map((y) => {
+                      if (!storyArray.includes(y)) {
+                        storyArray.push(y);
+                      }
+                    });
+                  }
+                }
+              });
             setStoryImage("");
             toast.success("Story Shared");
             setShareStoryLoading(false);
           });
       });
   };
+
   return (
     <div className=" mt-3 ">
       <h1 className="font-bold text-purpleLightC text-xl">Home</h1>
@@ -108,13 +136,12 @@ const STORY = () => {
           </div>
         )}
         {/* user story image */}
-        {user && (
+        {usersStory !== null && user !== null && (
           <div className="h-[150px] w-[100px] md:w-[130px] md:h-[200px]  rounded-lg mx-1 flex-shrink-0  justify-center items-center flex">
-            {/*TODO: this will be dynamic loaded from the server of all stories */}
             <div
               style={{
                 backgroundImage: `url(${
-                  usersStory?.length > 0 ? usersStory[0].storyImage : ""
+                  usersStory !== null ? usersStory?.storyImage[0] : ""
                 })`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",

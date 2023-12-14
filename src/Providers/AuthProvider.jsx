@@ -41,12 +41,11 @@ const AuthProvider = ({ children }) => {
   };
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (CurrenUser) => {
+      setUser(CurrenUser);
       if (CurrenUser?.email) {
         fetch(`/api/NewUser?email=${CurrenUser?.email}`)
           .then((res) => res.json())
           .then((data) => setUser(data));
-      } else {
-        setUser(null);
       }
 
       setLoading(false);

@@ -1,22 +1,36 @@
 import DbConnect from "@/services/DbConnect";
 import { NextResponse } from "next/server";
+import { IoBodySharp } from "react-icons/io5";
 
 const db = DbConnect();
 const storyCollection = (await db).collection("story");
-export const POST = async (req) => {
+export const PATCH = async (req) => {
   const body = await req.json();
-  const users = await storyCollection.insertOne(body);
+  const filter = { email: body.email };
+  console.log(body);
+  const updatedDoc = {
+    $set: {
+      email: body.email,
+      profileId: body.profileId,
+      profileImg: body.profileImg,
+      name: body.name,
+      storyImage: body.storyImage,
+    },
+  };
+  const options = { upsert: true };
+  const users = await storyCollection.updateOne(filter, updatedDoc, options);
   return NextResponse.json(users);
 };
 export const GET = async (req) => {
   const searchParams = req.nextUrl.searchParams;
   const query = searchParams.get("email");
   if (query) {
-    const res = await storyCollection
-      .find({ email: query })
-      .sort({ _id: -1 })
-      .toArray();
-    return new NextResponse(JSON.stringify(res));
+    const res = await storyCollection.findOne({ email: query });
+    if (res) {
+      return new NextResponse(JSON.stringify(res));
+    } else {
+      return new NextResponse(JSON.stringify(null));
+    }
   } else {
     const res = await storyCollection.find({}).toArray();
     return new NextResponse(JSON.stringify(res));
