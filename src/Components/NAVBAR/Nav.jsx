@@ -138,13 +138,13 @@ const Nav = () => {
                 className="btn text-white bg-purpleLightC"
                 onClick={() => {
                   logOutHandler();
-                  document.getElementById("my_modal_T").close();
+                  document.getElementById("my_modal_O").close();
                 }}
               >
                 Confirm
               </button>
               <button
-                onClick={() => document.getElementById("my_modal_T").close()}
+                onClick={() => document.getElementById("my_modal_O").close()}
                 className="btn border border-purpleLightC bg-transparent text-purpleLightC"
               >
                 Cancel
