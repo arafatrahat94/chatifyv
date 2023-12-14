@@ -84,8 +84,8 @@ const STORY = () => {
   const handleShareImg = () => {
     setShareStoryLoading(true);
     document.getElementById("my_modal_Story").close();
-    console.log(storyShare[0]);
     formData.append("image", storyShare[0]);
+    console.log(formData);
 
     fetch(imgHostingUrl, {
       method: "POST",
@@ -93,9 +93,11 @@ const STORY = () => {
     })
       .then((res) => res.json())
       .then((idata) => {
+        console.log(idata);
         if (idata.data?.display_url !== null) {
           storyArray.unshift(idata.data.display_url);
         }
+
         const newData = {
           email: user?.email,
           profileId: user?._id,
@@ -115,6 +117,7 @@ const STORY = () => {
           .then((data) => {
             toast.success("Story Shared");
             setShareStoryLoading(false);
+
             fetch(`/api/Story?email=${user?.email}`)
               .then((res) => res.json())
               .then((data) => {
