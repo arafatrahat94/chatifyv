@@ -20,7 +20,11 @@ const STORY = () => {
   const { user } = useAuth();
   useEffect(() => {
     if (user) {
-      fetch(`/api/Story?email=${user?.email}`)
+      fetch(`/api/Story?email=${user?.email}`, {
+        next: {
+          revalidate: 5,
+        },
+      })
         .then((res) => res.json())
         .then((data) => {
           console.log(data);
@@ -45,7 +49,11 @@ const STORY = () => {
         });
     }
     if (!user) {
-      fetch(`/api/Story`)
+      fetch(`/api/Story`, {
+        next: {
+          revalidate: 5,
+        },
+      })
         .then((res) => res.json())
         .then((data) => {
           console.log(data);
@@ -105,6 +113,8 @@ const STORY = () => {
         })
           .then((res) => res.json())
           .then((data) => {
+            toast.success("Story Shared");
+            setShareStoryLoading(false);
             fetch(`/api/Story?email=${user?.email}`)
               .then((res) => res.json())
               .then((data) => {
