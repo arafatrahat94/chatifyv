@@ -154,7 +154,7 @@ const STORY = () => {
 
         {/* story post modal */}
         <dialog id="my_modal_Story" className="modal bg-black bg-opacity-25">
-          <div className="min-h-screen bg-white  dark:bg-primaryBgDark flex justify-center flex-col min-w-full items-center rounded-md ">
+          <div className="min-h-screen p-5 bg-white  dark:bg-primaryBgDark flex justify-center flex-col min-w-full items-center rounded-md ">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
               <button
@@ -166,16 +166,14 @@ const STORY = () => {
                 </>
               </button>
             </form>
-            <h3 className="font-bold mt-2 flex justify-center  z-10 text-xl text-purpleC dark:text-purpleLightC">
-              Add Story
-            </h3>
+
             <label
               for="file"
               class={`${
                 storyImage
-                  ? ""
+                  ? " mt-7"
                   : " shadow-[0px_48px_35px_-48px_rgba(0,0,0,0.1)] lg:max-w-[700px] md:mx-auto  rounded-[10px]  mx-5"
-              } min-h-[70vh] md:min-w-[600px] xl:w-[900px] lg:w-[800px] max-h-[70vh] min-w-[290px] flex flex-col  mt-3 gap-5 cursor-pointer items-center justify-center  `}
+              } min-h-[70vh] md:min-w-[600px] xl:w-[900px] lg:w-[800px]  min-w-[290px] flex flex-col  mt-3 gap-5 cursor-pointer items-center justify-center  `}
             >
               <div class="flex items-center justify-center h-full w-full  object-cover">
                 {storyImage?.length > 0 ? (
