@@ -1,19 +1,27 @@
 "use client";
+// Import Swiper React components
+import { Swiper, SwiperSlide } from "swiper/react";
 
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/navigation";
+import { Pagination, Navigation } from "swiper/modules";
 import app from "@/Firebase/firebase.config";
 import Dynamicimage from "@/Utilities/DynamicImage";
 import useAuth from "@/hooks/useAuth";
 import useUser from "@/hooks/useUser";
 import { onAuthStateChanged } from "firebase/auth";
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { FaPlus, FaShareAlt } from "react-icons/fa";
-import { MdOutlineCancel } from "react-icons/md";
+import { MdOutlineCancel, MdOutlineDeleteForever } from "react-icons/md";
 import { getAuth } from "firebase/auth";
+import { FaCircleChevronLeft, FaCircleChevronRight } from "react-icons/fa6";
 const auth = getAuth(app);
 const STORY = () => {
   let [usersStory, setUsersStory] = useState(null);
+  let [storySwiper, setStorySwiper] = useState(null);
   // let [storyArray, setStoryArray] = useState([]);
   let storyArray = useMemo(() => [], []);
   const [allStory, setAllStory] = useState(null);
@@ -147,7 +155,63 @@ const STORY = () => {
           });
       });
   };
+  const handleDelete = () => {
+    const storyArray2 = storySwiper?.filter(
+      (x) => x !== storySwiper[currentPage]
+    );
+    const newData = {
+      email: user?.email,
+      profileId: user?._id,
+      profileImg: user?.profileImg,
+      name: user?.userName,
+      storyImage: storyArray2,
+    };
+    if (user) {
+      document.getElementById("my_modal_StorySwpier").close();
+      fetch("/api/Story", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newData),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          toast.success("Story deleted");
+          setShareStoryLoading(false);
 
+          fetch(`/api/Story?email=${user?.email}`)
+            .then((res) => res.json())
+            .then((data) => {
+              console.log(data);
+              if (user && data !== null) {
+                const { storyImage } = data.signedEmail;
+                setAllStory(data.allUser);
+                setUsersStory(data.signedEmail);
+                if (storyImage !== undefined) {
+                  const filtering = storyImage.filter(
+                    (x) => x !== undefined || x !== null
+                  );
+                  filtering.map((y) => {
+                    if (!storyArray.includes(y)) {
+                      storyArray.push(y);
+                    }
+                  });
+                }
+              }
+              if (!user) {
+                setAllStory(data);
+              }
+            });
+          setStoryImage("");
+
+          setShareStoryLoading(false);
+        });
+    }
+  };
+  // swiper codes
+  const [currentPage, setCurrentPage] = useState(0);
+  const [userDeleteButton, setUserDeleteButton] = useState(false);
   return (
     <div className=" mt-3 ">
       <h1 className="font-bold text-purpleLightC text-xl">Home</h1>
@@ -156,7 +220,12 @@ const STORY = () => {
         {/*TODO: this will be available if user is logged in  */}
         {user && (
           <div
-            style={{ backgroundImage: `url(${user?.profileImg})` }}
+            style={{
+              backgroundImage: `url(${user?.profileImg})`,
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
+              backgroundSize: "cover",
+            }}
             onClick={() =>
               document.getElementById("my_modal_Story").showModal()
             }
@@ -175,7 +244,14 @@ const STORY = () => {
         )}
         {/* user story image */}
         {usersStory !== null && user !== null && (
-          <div className="h-[150px] w-[100px] md:w-[130px] md:h-[200px]  rounded-lg mx-1 flex-shrink-0  justify-center items-center flex">
+          <div
+            onClick={() => {
+              document.getElementById("my_modal_StorySwpier").showModal();
+              setStorySwiper(usersStory?.storyImage);
+              setUserDeleteButton(true);
+            }}
+            className="h-[150px] w-[100px] md:w-[130px] md:h-[200px]  rounded-lg mx-1 flex-shrink-0  justify-center items-center flex"
+          >
             <div
               style={{
                 backgroundImage: `url(${
@@ -201,10 +277,17 @@ const STORY = () => {
           </div>
         )}
         <div className="flex">
-          {allStory?.map((y) => (
+          {allStory?.map((y, i) => (
             <>
-              <div className="h-[150px] w-[100px] md:w-[130px] md:h-[200px]  rounded-lg mx-1 flex-shrink-0  justify-center items-center flex">
-                {/*TODO: this will be dynamic loaded from the server of all stories */}
+              <div
+                key={i}
+                onClick={() => {
+                  document.getElementById("my_modal_StorySwpier").showModal();
+                  setStorySwiper(y?.storyImage);
+                  setUserDeleteButton(false);
+                }}
+                className="h-[150px] w-[100px] md:w-[130px] md:h-[200px]  rounded-lg mx-1 flex-shrink-0  justify-center items-center flex"
+              >
                 <div
                   style={{
                     backgroundImage: `url(${
@@ -239,7 +322,10 @@ const STORY = () => {
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
               <button
-                onClick={() => setStoryImage("")}
+                onClick={() => {
+                  setUserDeleteButton(false);
+                  setStoryImage("");
+                }}
                 className="btn btn-sm btn-circle text-center flex items-center  z-20 justify-center bg-purpleLightC btn-ghost absolute text-white right-4 top-4"
               >
                 <>
@@ -314,6 +400,83 @@ const STORY = () => {
               <FaShareAlt /> &nbsp;{" "}
               <span className="hidden md:block">Share</span>
             </button>
+          </div>
+        </dialog>
+
+        {/* swiper modal */}
+        <dialog
+          id="my_modal_StorySwpier"
+          className="modal bg-black bg-opacity-25"
+        >
+          <div className="min-h-screen p-5 bg-white  dark:bg-primaryBgDark flex justify-center flex-col min-w-full items-center rounded-md ">
+            {user && userDeleteButton && (
+              <button
+                onClick={handleDelete}
+                className="btn btn-sm btn-circle text-center flex items-center  z-20 justify-center bg-purpleLightC btn-ghost absolute text-white right-14 top-4"
+              >
+                <button>
+                  <MdOutlineDeleteForever />
+                </button>
+              </button>
+            )}
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+
+              <button
+                onClick={() => {
+                  setStorySwiper(null);
+                  setCurrentPage(0);
+                }}
+                className="btn btn-sm btn-circle text-center flex items-center  z-20 justify-center bg-purpleLightC btn-ghost absolute text-white right-4 top-4"
+              >
+                <>
+                  <MdOutlineCancel />
+                </>
+              </button>
+            </form>
+
+            <div
+              class={`${
+                storyImage
+                  ? " mt-7"
+                  : " shadow-[0px_48px_35px_-48px_rgba(0,0,0,0.1)] lg:max-w-[700px] md:mx-auto  rounded-[10px]  mx-5"
+              } min-h-[70vh] md:min-w-[600px] xl:w-[900px] lg:w-[800px]  min-w-[290px] flex flex-col  mt-3 gap-5 cursor-pointer items-center justify-center  `}
+            >
+              <Image
+                src={storySwiper !== null && storySwiper[currentPage]}
+                alt=""
+                className="w-full max-h-[80vh]  flex items-center transform duration-300 justify-center object-contain h-full "
+                width={1000}
+                height={1000}
+              ></Image>
+              <div className="join absolute flex justify-between w-full items-center  theme-text">
+                <button
+                  type="button"
+                  onClick={() => {
+                    console.log(currentPage);
+                    if (currentPage > 0) {
+                      setCurrentPage(currentPage - 1);
+                    }
+                  }}
+                  className=" text-purpleC dark:text-purpleLightC text-4xl"
+                >
+                  <FaCircleChevronLeft />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (currentPage < storySwiper?.length) {
+                      setCurrentPage(currentPage + 1);
+                    }
+                  }}
+                  disabled={currentPage === storySwiper?.length - 1 && true}
+                  className=" text-purpleC dark:text-purpleLightC text-4xl"
+                >
+                  <FaCircleChevronRight />
+                </button>
+              </div>
+            </div>
           </div>
         </dialog>
       </div>

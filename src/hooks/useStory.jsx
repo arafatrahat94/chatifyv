@@ -10,16 +10,6 @@ const useStory = () => {
     queryFn: () =>
       fetch(`/api/Story?email=${user?.email}`).then((res) => res.json()),
   });
-  if (user) {
-    const filterData = data.filter((x) => x.profileId !== user._id);
-    setAllStory(filterData);
-
-    return [AllStory, refetch];
-  }
-  if (!user) {
-    setAllStory(data);
-    return [AllStory, refetch];
-  }
 };
 
 export default useStory;
