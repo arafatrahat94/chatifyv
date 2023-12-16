@@ -12,7 +12,7 @@ const GlobalError = (error, reset) => {
     window.location.reload();
     router.refresh();
   };
-  console.log(window.location.href);
+  // console.log(window.location.href);
   return (
     <div>
       <div className="min-h-screen w-full flex justify-center items-center dark:bg-primaryBgDark bg-white">

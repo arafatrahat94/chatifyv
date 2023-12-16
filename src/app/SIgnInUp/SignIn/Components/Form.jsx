@@ -83,11 +83,11 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
         .catch((err) => {
           setError(err.message.split("Firebase:").join(""));
           setSignLoaing(false);
-          console.log(err);
+          // console.log(err);
           return document.getElementById("my_modal_CLick").click();
         });
     }
-    console.log(email.length === 0);
+    // console.log(email.length === 0);
   };
   const rememberMeOption = watch("Remember");
   const Pass = watch("Pass");

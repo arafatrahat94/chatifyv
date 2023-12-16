@@ -418,3 +418,37 @@
     scrollbar-width: none; /* Firefox */
   }
 }
+
+/* text area auto resize */
+.textareaWrapper {
+  border-radius: 5px;
+  /* padding: 25px 25px 30px; */
+  /* box-shadow: 8px 8px 10px rgba(0, 0, 0, 0.06); */
+}
+.textareaWrapper h2 {
+  color: #4671ea;
+  font-size: 28px;
+  text-align: center;
+}
+.textareaWrapper textarea {
+  resize: none;
+  height: 59px;
+  outline: none;
+  padding: 15px;
+  font-size: 16px;
+  margin-top: 20px;
+
+  max-height: 330px;
+  caret-color: #4671ea;
+  /* border: 1px solid #bfbfbf; */
+  @apply w-[90%] md:w-[95%];
+}
+textarea::placeholder {
+  color: #b3b3b3;
+}
+textarea:is(:focus, :valid) {
+  padding: 14px;
+}
+textarea::-webkit-scrollbar {
+  width: 0px;
+}

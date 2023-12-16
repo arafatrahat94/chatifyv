@@ -35,7 +35,7 @@ const STORY = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           if (user && data !== null) {
             const { storyImage } = data.signedEmail;
             setAllStory(data.allUser);
@@ -64,7 +64,7 @@ const STORY = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           if (data !== null) {
             setAllStory(data);
           }
@@ -72,7 +72,7 @@ const STORY = () => {
     }
   }, [user, storyArray]);
 
-  console.log(allStory);
+  // console.log(allStory);
   const imgHostingUrl = `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMG_KEY}`;
   const formData = new FormData();
 
@@ -80,7 +80,7 @@ const STORY = () => {
   const [storyShare, setStoryShare] = useState(null);
   // formData.append("image", event.target.files[0]);
   const onImageChange = (event) => {
-    console.log(event.target.files);
+    // console.log(event.target.files);
     setStoryShare(event.target.files);
 
     if (event.target.files && event.target.files[0]) {
@@ -93,7 +93,7 @@ const STORY = () => {
     setShareStoryLoading(true);
     document.getElementById("my_modal_Story").close();
     formData.append("image", storyShare[0]);
-    console.log(formData);
+    // console.log(formData);
 
     fetch(imgHostingUrl, {
       method: "POST",
@@ -101,7 +101,7 @@ const STORY = () => {
     })
       .then((res) => res.json())
       .then((idata) => {
-        console.log(idata);
+        // console.log(idata);
         if (idata.data?.display_url !== null) {
           storyArray.unshift(idata.data.display_url);
         }
@@ -129,7 +129,7 @@ const STORY = () => {
             fetch(`/api/Story?email=${user?.email}`)
               .then((res) => res.json())
               .then((data) => {
-                console.log(data);
+                // console.log(data);
                 if (user && data !== null) {
                   const { storyImage } = data.signedEmail;
                   setAllStory(data.allUser);
@@ -183,7 +183,7 @@ const STORY = () => {
           fetch(`/api/Story?email=${user?.email}`)
             .then((res) => res.json())
             .then((data) => {
-              console.log(data);
+              // console.log(data);
               if (user && data !== null) {
                 const { storyImage } = data.signedEmail;
                 setAllStory(data.allUser);
@@ -453,7 +453,7 @@ const STORY = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    console.log(currentPage);
+                    // console.log(currentPage);
                     if (currentPage > 0) {
                       setCurrentPage(currentPage - 1);
                     }

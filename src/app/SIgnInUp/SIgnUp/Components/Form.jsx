@@ -28,7 +28,7 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
 
   const onSubmit = (data) => {
     const { userName, userId, email, Pass, ConfirmPass } = data;
-    console.log(data);
+    // console.log(data);
     const newData = {
       userName,
       userId,

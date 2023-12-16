@@ -7,7 +7,7 @@ const storyCollection = (await db).collection("story");
 export const PATCH = async (req) => {
   const body = await req.json();
   const filter = { email: body.email };
-  console.log(body);
+  // console.log(body);
   const updatedDoc = {
     $set: {
       email: body.email,
