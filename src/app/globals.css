@@ -436,12 +436,11 @@
   outline: none;
   padding: 15px;
   font-size: 16px;
-  margin-top: 20px;
 
   max-height: 330px;
   caret-color: #4671ea;
   /* border: 1px solid #bfbfbf; */
-  @apply w-[90%] md:w-[95%];
+  @apply w-full;
 }
 textarea::placeholder {
   color: #b3b3b3;

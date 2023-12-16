@@ -123,7 +123,9 @@ const STORY = () => {
         })
           .then((res) => res.json())
           .then((data) => {
-            toast.success("Story Shared");
+            toast.success("Story Shared", {
+              id: "storyOne",
+            });
             setShareStoryLoading(false);
 
             fetch(`/api/Story?email=${user?.email}`)
@@ -150,7 +152,9 @@ const STORY = () => {
                 }
               });
             setStoryImage("");
-            toast.success("Story Shared");
+            toast.success("Story Shared", {
+              id: "storySharedTwo",
+            });
             setShareStoryLoading(false);
           });
       });
@@ -177,7 +181,7 @@ const STORY = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          toast.success("Story deleted");
+          toast.success("Story deleted", { id: "storyDeleted" });
           setShareStoryLoading(false);
 
           fetch(`/api/Story?email=${user?.email}`)
@@ -232,12 +236,12 @@ const STORY = () => {
             className={`${
               !user && "hidden"
             }cursor-pointer h-[150px] w-[100px] md:w-[130px]
-          md:h-[200px] rounded-lg mx-1 flex-shrink-0
+          md:h-[200px] backdrop-blur rounded-lg mx-1 flex-shrink-0
           justify-center items-center flex`}
           >
-            <h1 className="flex justify-center items-center flex-col w-[44px] font-semibold text-center text-white">
+            <h1 className="flex justify-center items-center flex-col w-[54px] gap-y-2 font-semibold text-center text-white">
               {" "}
-              <FaPlus />
+              <FaPlus className="text-xl bg-purpleLightC rounded-full border-2 border-white p-1" />
               Add Story
             </h1>
           </div>

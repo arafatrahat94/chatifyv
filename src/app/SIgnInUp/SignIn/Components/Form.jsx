@@ -42,15 +42,19 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
           reset();
           setInitialEmail(null);
           setInitialPass(null);
-          toast.success("User Signed In");
+          toast.success("User Signed In", { id: "userSign" });
         })
         .catch((err) => {
           setSignLoaing(false);
 
-          toast.error(err.message.split("Firebase:").join(""));
+          toast.error(err.message.split("Firebase:").join(""), {
+            id: "errToast",
+          });
         });
     } else {
-      return toast.error("Please enter email and password");
+      return toast.error("Please enter email and password", {
+        id: "passErrToast",
+      });
     }
   };
 
@@ -60,12 +64,16 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
       .then((res) => {
         setSignLoaing(false);
 
-        return toast.success("User Signed In");
+        return toast.success("User Signed In", {
+          id: "toatSignTwo",
+        });
       })
       .catch((err) => {
         setSignLoaing(false);
 
-        return toast.error(err.message.split("Firebase:").join(""));
+        return toast.error(err.message.split("Firebase:").join(""), {
+          id: "toastErrTwo",
+        });
       });
   };
 

@@ -69,10 +69,14 @@ const MediumDeviceNav = () => {
   const logOutHandler = () => {
     logOut()
       .then(() => {
-        return toast.success("User Signed Out");
+        return toast.success("User Signed Out", {
+          id: "signedOutToast",
+        });
       })
       .catch((err) => {
-        toast.error(err.message.split("Firebase:").join(""));
+        toast.error(err.message.split("Firebase:").join(""), {
+          id: "signedOutToastErr",
+        });
       });
   };
   const logoutConfirm = () => {

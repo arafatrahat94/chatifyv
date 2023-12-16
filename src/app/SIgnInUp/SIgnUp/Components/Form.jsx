@@ -38,7 +38,9 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
     };
 
     if (Pass !== ConfirmPass) {
-      toast.error("Password does not match");
+      toast.error("Password does not match", {
+        id: "passNotMatchToast",
+      });
     } else {
       setSignLoaing(true);
       createU(email, Pass)
@@ -54,11 +56,15 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
           const response = await post.json();
           if (response) {
             setSignLoaing(false);
-            toast.success("User Created");
+            toast.success("User Created", {
+              id: "toastUserNew",
+            });
           }
         })
         .catch((err) => {
-          toast.error(err.message.split("Firebase:").join(""));
+          toast.error(err.message.split("Firebase:").join(""), {
+            id: "errToastThree",
+          });
           setSignLoaing(false);
         });
     }
@@ -85,12 +91,16 @@ const FormComponent = ({ signLoading, setSignLoaing }) => {
         const response = await post.json();
         if (response) {
           setSignLoaing(false);
-          toast.success("User Created");
+          toast.success("User Created", {
+            id: "toastUserNewTwo",
+          });
         }
       })
       .catch((err) => {
         setSignLoaing(false);
-        toast.error(err.message.split("Firebase:").join(""));
+        toast.error(err.message.split("Firebase:").join(""), {
+          id: "errToastFour",
+        });
       });
   };
   return (
