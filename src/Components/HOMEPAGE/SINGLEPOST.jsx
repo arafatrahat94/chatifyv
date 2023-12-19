@@ -52,7 +52,7 @@ const SINGLEPOST = ({ datas }) => {
     }
 
     if (datas?._id) {
-      fetch(`/api/Post/Liked?id=${datas?._id}`)
+      fetch(`/api/PostLiked?id=${datas?._id}`)
         .then((res) => res.json())
         .then((data) => {
           data?.map((x) => {
