@@ -22,7 +22,7 @@ export const PATCH = async (req) => {
   return NextResponse.json(users);
 };
 export const GET = async (req) => {
-  const searchParams = req.nextUrl.searchParams;
+  const searchParams = await req.nextUrl.searchParams;
   const query = searchParams.get("email");
   if (query) {
     const res = await storyCollection.findOne({ email: query });
@@ -37,6 +37,10 @@ export const GET = async (req) => {
     }
   } else {
     const res = await storyCollection.find({}).toArray();
-    return new NextResponse(JSON.stringify(res));
+    if (res) {
+      return new NextResponse(JSON.stringify(res));
+    } else {
+      return new NextResponse(JSON.stringify(res));
+    }
   }
 };

@@ -1,6 +1,17 @@
+"use client";
+
 import { CiFilter } from "react-icons/ci";
 import SINGLEPOST from "./SINGLEPOST";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
 const ALL = () => {
+  const fetcher = (url) => fetch(url).then((res) => res.json());
+  const { data: AllPost = [], mutate } = useSWR("/api/Post", fetcher);
+  // useEffect(() => {
+  //   setInterval(() => {
+  //     mutate();
+  //   }, 2000);
+  // }, []);
   return (
     <div className="mb-4">
       <div className="flex items-center justify-between">
@@ -29,7 +40,12 @@ const ALL = () => {
       </div>
       {/* TODO: this is a dynamic section where mapping will be done from the server */}
       <div>
-        <SINGLEPOST />
+        {AllPost?.length > 0 &&
+          AllPost?.map((datas, i) => (
+            <>
+              <SINGLEPOST mutate={mutate} datas={datas} key={i} />
+            </>
+          ))}
       </div>
       <button className="lg:px-10 bg-purpleC text-white px-5 flex justify-center mt-3 lg:text-base text-sm dark:bg-purpleLightC py-2 rounded-[4px]">
         See More

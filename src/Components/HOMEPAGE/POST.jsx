@@ -11,6 +11,7 @@ import { MdDelete } from "react-icons/md";
 import useAuth from "@/hooks/useAuth";
 import CustomToast from "../CustomizedToast/CustomToast";
 import toast from "react-hot-toast";
+import moment from "moment";
 const POST = () => {
   const { user } = useAuth();
   const [postLater, setPostLater] = useState(false);
@@ -30,6 +31,10 @@ const POST = () => {
   };
   const [sharePostLoading, setSharePostLoading] = useState(false);
   const handlePost = () => {
+    if (!user) {
+      toast.error("Please Login First");
+      return;
+    }
     setSharePostLoading(true);
     let postInput = document.getElementById("postInput");
     const transformedValue = postInput.value
@@ -43,6 +48,8 @@ const POST = () => {
       profileId: user?._id,
       profileImg: user?.profileImg,
       name: user?.userName,
+      userId: user?.userId,
+      uploadTime: moment().format("MMM Do"),
     };
     if (postImage.length > 0) {
       formData.append("image", postImageWillBeUploaded[0]);
@@ -131,6 +138,11 @@ const POST = () => {
               {/* TODO: this will be rich text editor */}
               <div className="textareaWrapper">
                 <textarea
+                  onClick={() => {
+                    if (!user) {
+                      toast.error("Please Login First", { id: "loginErro" });
+                    }
+                  }}
                   onKeyUp={(e) => {
                     let textarea = document.querySelector("textarea");
                     textarea.style.height = "63px";
@@ -155,6 +167,7 @@ const POST = () => {
                       height={1000}
                     ></Image>
                     <input
+                      disabled={!user && true}
                       onChange={onImageChange}
                       type="file"
                       className=" opacity-0 pb-4 w-[90%] h-full top-0 absolute z-1"

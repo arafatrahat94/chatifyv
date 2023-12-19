@@ -9,11 +9,19 @@ export const GET = async (req) => {
   // console.log(searchParams.get("email"));
   if (query) {
     const user = await userCollection.findOne({ email: query });
-    // console.log(user);
-    return new NextResponse(JSON.stringify(user));
+    if (user) {
+      return new NextResponse(JSON.stringify(user));
+    } else {
+      return new NextResponse(JSON.stringify([]));
+    }
   } else if (!query) {
     const users = await userCollection.find({}).toArray();
-    return NextResponse.json(users);
+
+    if (users) {
+      return NextResponse.json(users);
+    } else {
+      return new NextResponse(JSON.stringify([]));
+    }
   }
 };
 export const POST = async (req) => {
