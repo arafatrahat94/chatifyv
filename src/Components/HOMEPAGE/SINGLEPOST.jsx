@@ -420,22 +420,24 @@ const SINGLEPOST = ({ datas, refetch }) => {
                 ></textarea>
               )}
             </div>
-            <div className="w-[30px] top-[10px] right-4 absolute justify-end mt-2 z-10   flex ">
-              <button
-                onClick={() => {
-                  if (!user) {
-                    return toast.error("Please Login First", {
-                      id: "loginErro",
-                    });
-                  }
-                  submitComment();
-                  console.log("hi");
-                }}
-                className="text-2xl text-purpleLightC  "
-              >
-                <TbBrandTelegram />
-              </button>
-            </div>
+            {user && (
+              <div className="w-[30px] top-[10px] right-4 absolute justify-end mt-2 z-10   flex ">
+                <button
+                  onClick={() => {
+                    if (!user) {
+                      return toast.error("Please Login First", {
+                        id: "loginErro",
+                      });
+                    }
+                    submitComment();
+                    console.log("hi");
+                  }}
+                  className="text-2xl text-purpleLightC  "
+                >
+                  <TbBrandTelegram />
+                </button>
+              </div>
+            )}
           </div>
           <div className="mt-4 " id="addedComments">
             {postComments !== null &&
