@@ -387,7 +387,7 @@ const SINGLEPOST = ({ datas, refetch }) => {
             setlikeShow(!likeShow);
             singleData();
           }}
-          className="text-grayC dark:text-white opacity-80 my-1"
+          className="text-grayC cursor-pointer dark:text-white opacity-80 my-1"
         >
           {postData?.likes?.length || 0} Liked
         </h1>
