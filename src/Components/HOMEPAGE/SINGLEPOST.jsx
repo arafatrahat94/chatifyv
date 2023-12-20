@@ -15,6 +15,10 @@ import { useEffect } from "react";
 
 import useAuth from "@/hooks/useAuth";
 import { PiHeartDuotone, PiHeartFill } from "react-icons/pi";
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import "react-photo-view/dist/react-photo-view.css";
+import { TbBrandTelegram } from "react-icons/tb";
+
 const SINGLEPOST = ({ datas }) => {
   let likesArray = useMemo(() => [], []);
   const [postData, setPostData] = useState(null);
@@ -170,8 +174,9 @@ const SINGLEPOST = ({ datas }) => {
         </div>
 
         <div className="flex text-postTextColor items-center gap-x-2">
-          <h1 className="opacity-75">{datas?.uploadTime}</h1>
-          <HiOutlineDotsCircleHorizontal className="text-2xl " />
+          <h1 className="opacity-75 text-sm md:text-base">
+            {datas?.uploadTime}
+          </h1>
         </div>
       </div>
       <div className="my-3 ">
@@ -182,13 +187,17 @@ const SINGLEPOST = ({ datas }) => {
         ></h1>
         <div className="  mt-2 gap-x-2 flex xl:flex-row gap-y-2 flex-col object-center ">
           {datas.category === "postImage" && (
-            <Image
-              alt="postImage"
-              width={1000}
-              height={1000}
-              className=" md:rounded-md lg:rounded-none w-full lg:w-[600px] md:w-[580px] mx-auto max-h-[300px] object-cover object-center"
-              src={datas?.postImg}
-            ></Image>
+            <PhotoProvider>
+              <PhotoView src={datas?.postImg}>
+                <Image
+                  alt="postImage"
+                  width={1000}
+                  height={1000}
+                  className=" md:rounded-md lg:rounded-none w-full lg:w-[600px] md:w-[580px] mx-auto max-h-[300px] object-cover object-center"
+                  src={datas?.postImg}
+                ></Image>
+              </PhotoView>
+            </PhotoProvider>
           )}
         </div>
       </div>
@@ -227,15 +236,29 @@ const SINGLEPOST = ({ datas }) => {
         <div
           className={`my-2 ${
             commentShow === false && "hidden"
-          } bg-gray-200 dark:bg-secondaryBgDark dark:border-darkborder border p-4 rounded-lg`}
+          } relative  rounded-lg`}
         >
-          <input
-            className="input-bordered focus:outline-purpleC dark:focus:outline-none input w-full"
-            type="text"
-          />
-          <div className="w-full justify-end mt-2  flex ">
-            <button className="btn rounded-[3rem]   hover:bg-white bg-white dark:bg-purpleLightC focus:border  focus:border-purpleC text-purpleC dark:text-white w-[100px]">
-              Comment
+          <div className="textareaWrapper">
+            <textarea
+              onClick={() => {
+                if (!user) {
+                  toast.error("Please Login First", { id: "loginErro" });
+                }
+              }}
+              onKeyUp={(e) => {
+                let textarea = document.querySelector("textarea");
+                textarea.style.height = "63px";
+                let scHeight = textarea.scrollHeight;
+                textarea.style.height = `${scHeight}px`;
+              }}
+              id="postInput2"
+              placeholder="type your comment"
+              className={`border border-secondaryBgLight dark:border-secondaryBgDark   bg-transparent dark:bg-primaryBgDark outline-none rounded-[1rem]  p-4   max-h-full min-h-[60px]`}
+            ></textarea>
+          </div>
+          <div className="w-[30px] top-[10px] right-4 absolute justify-end mt-2  flex ">
+            <button className="text-2xl text-purpleLightC  ">
+              <TbBrandTelegram />
             </button>
           </div>
         </div>
@@ -246,10 +269,10 @@ const SINGLEPOST = ({ datas }) => {
       <div className="transform duration-300 ">
         {" "}
         {likeShow && postData?.likes?.length > 0 && (
-          <div className="mx-4 mb-4 transition-all ease-in delay-200 duration-300 transform">
+          <div className=" dark:bg-primaryBgDark border border-grayC p-4 transition-all ease-in delay-200 duration-300 transform">
             {likedBy?.map((post, i) => (
               <>
-                <div className="flex items-center gap-x-2" key={i}>
+                <div className="flex   items-center gap-x-2" key={i}>
                   <div>
                     <Image
                       alt="profile image"
