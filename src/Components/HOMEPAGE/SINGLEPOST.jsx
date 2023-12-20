@@ -93,13 +93,14 @@ const SINGLEPOST = ({ datas, refetch }) => {
       likedBy?.map((x) => {
         if (x?._id === user?._id) {
           setLiked(true);
+        } else {
+          setLiked(false);
         }
       });
     }
   };
   useEffect(() => {
     singleData();
-    // fetchCommens();
   }, []);
 
   const handleLove = () => {
@@ -448,6 +449,7 @@ const SINGLEPOST = ({ datas, refetch }) => {
           </div>
           <div className="mt-4 " id="addedComments">
             {postComments !== null &&
+              postComments.length > 0 &&
               postComments?.map((comment, i) => (
                 <>
                   <div key={i} className="flex my-4 w-full h-full">
