@@ -28,7 +28,7 @@ const SINGLEPOST = ({ datas, refetch }) => {
   const { user } = useAuth();
   const [liked, setLiked] = useState(null);
   // const [likedBy, setLikedBy] = useState(null);
-  const [postComments, setPostComments] = useState(null);
+  // const [postComments, setPostComments] = useState(null);
   const [commentShow, setCommentShow] = useState(false);
   const [likeShow, setlikeShow] = useState(false);
   const [commentText, setCommentText] = useState(null);
@@ -40,17 +40,24 @@ const SINGLEPOST = ({ datas, refetch }) => {
       refreshInterval: 2000,
     }
   );
+  const { data: postComments = [] } = useSWR(
+    `/api/PostComment?id=${datas._id}`,
+    fetcher,
+    {
+      refreshInterval: 2000,
+    }
+  );
 
-  const fetchCommens = () => {
-    fetch(`/api/PostComment?id=${datas._id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.length > 0) {
-          console.log(data);
-          setPostComments(data);
-        }
-      });
-  };
+  // const fetchCommens = () => {
+  //   fetch(`/api/PostComment?id=${datas._id}`)
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       if (data.length > 0) {
+  //         console.log(data);
+  //         setPostComments(data);
+  //       }
+  //     });
+  // };
 
   const singleData = () => {
     fetch(`/api/Post/${datas?._id}`)
@@ -92,7 +99,7 @@ const SINGLEPOST = ({ datas, refetch }) => {
   };
   useEffect(() => {
     singleData();
-    fetchCommens();
+    // fetchCommens();
   }, []);
 
   const handleLove = () => {
@@ -173,7 +180,7 @@ const SINGLEPOST = ({ datas, refetch }) => {
           id: "CommentAdded",
         });
         setCommentText(null);
-        fetchCommens();
+        // fetchCommens();
       });
   };
   const handleCommentDelete = (id) => {
@@ -182,7 +189,7 @@ const SINGLEPOST = ({ datas, refetch }) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        fetchCommens();
+        // fetchCommens();
         toast.success("Comment Deleted", {
           id: "CommentDeleted",
         });

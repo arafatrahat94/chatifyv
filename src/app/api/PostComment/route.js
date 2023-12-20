@@ -9,7 +9,10 @@ export const GET = async (req) => {
   const id = searchParams.get("id");
   const filter = { PostId: id };
   const res = await commentsCollection.find(filter).toArray();
-  return new NextResponse(JSON.stringify(res));
+  if (res.length > 0) {
+    return new NextResponse(JSON.stringify(res));
+  }
+  return new NextResponse(JSON.stringify([]));
 };
 export const POST = async (req) => {
   const body = await req.json();
