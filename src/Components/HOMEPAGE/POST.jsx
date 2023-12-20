@@ -35,7 +35,7 @@ const POST = () => {
       toast.error("Please Login First");
       return;
     }
-    setSharePostLoading(true);
+
     let postInput = document.getElementById("postInput");
     const transformedValue = postInput.value
       .replace(/ /g, "&nbsp;")
@@ -52,6 +52,7 @@ const POST = () => {
       uploadTime: moment().format("MMM Do"),
     };
     if (postImage.length > 0) {
+      setSharePostLoading(true);
       formData.append("image", postImageWillBeUploaded[0]);
       fetch(imgHostingUrl, {
         method: "POST",
@@ -83,11 +84,18 @@ const POST = () => {
               setPostImageWillBeUploaded(null);
               console.log(data);
               toast.success("Post Shared", {
-                id: "postImage",
+                id: "postImageToast",
               });
+              setTimeout(() => {
+                toast.dismiss(postImageToast);
+              }, 2000);
             });
         });
     } else {
+      if (document.getElementById("postInput").value === "") {
+        return;
+      }
+      setSharePostLoading(true);
       const newData2 = {
         ...newData,
         postText: transformedValue,

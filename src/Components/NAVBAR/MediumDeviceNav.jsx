@@ -83,7 +83,7 @@ const MediumDeviceNav = () => {
     return document.getElementById("my_modal_2").showModal();
   };
   return (
-    <nav className="top-[69px] sticky z-10 lg:hidden">
+    <nav className="top-[69px] sticky z-20 lg:hidden">
       <OutsideClickHandler
         onOutsideClick={() => {
           if (navOpen === true) {

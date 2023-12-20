@@ -6,12 +6,12 @@ import { useEffect, useState } from "react";
 import useSWR from "swr";
 const ALL = () => {
   const fetcher = (url) => fetch(url).then((res) => res.json());
-  const { data: AllPost = [], mutate } = useSWR("/api/Post", fetcher);
-  // useEffect(() => {
-  //   setInterval(() => {
-  //     mutate();
-  //   }, 2000);
-  // }, []);
+  const { data: AllPost = [], mutate } = useSWR("/api/Post", fetcher, {
+    refreshInterval: 2000,
+  });
+  const refetch = () => {
+    mutate();
+  };
   return (
     <div className="mb-4">
       <div className="flex items-center justify-between">
@@ -23,13 +23,13 @@ const ALL = () => {
         {AllPost?.length > 0 &&
           AllPost?.map((datas, i) => (
             <>
-              <SINGLEPOST mutate={mutate} datas={datas} key={i} />
+              <SINGLEPOST refetch={refetch} datas={datas} key={i} />
             </>
           ))}
       </div>
-      <button className="lg:px-10 bg-purpleC text-white px-5 flex justify-center mt-3 lg:text-base text-sm dark:bg-purpleLightC py-2 rounded-[4px]">
+      {/* <button className="lg:px-10 bg-purpleC text-white px-5 flex justify-center mt-3 lg:text-base text-sm dark:bg-purpleLightC py-2 rounded-[4px]">
         See More
-      </button>
+      </button> */}
     </div>
   );
 };

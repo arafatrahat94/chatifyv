@@ -5,7 +5,7 @@ import Dynamicimage from "@/Utilities/DynamicImage";
 import { useMemo, useState } from "react";
 import { CiBookmark, CiHeart } from "react-icons/ci";
 
-import { HiOutlineDotsCircleHorizontal } from "react-icons/hi";
+import { HiOutlineDotsCircleHorizontal, HiOutlineTrash } from "react-icons/hi";
 import { GoComment } from "react-icons/go";
 
 import { FaHeart } from "react-icons/fa";
@@ -18,13 +18,40 @@ import { PiHeartDuotone, PiHeartFill } from "react-icons/pi";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 import { TbBrandTelegram } from "react-icons/tb";
+import toast from "react-hot-toast";
+import CustomToast from "../CustomizedToast/CustomToast";
+import useSWR from "swr";
 
-const SINGLEPOST = ({ datas }) => {
+const SINGLEPOST = ({ datas, refetch }) => {
   let likesArray = useMemo(() => [], []);
   const [postData, setPostData] = useState(null);
   const { user } = useAuth();
   const [liked, setLiked] = useState(null);
-  const [likedBy, setLikedBy] = useState(null);
+  // const [likedBy, setLikedBy] = useState(null);
+  const [postComments, setPostComments] = useState(null);
+  const [commentShow, setCommentShow] = useState(false);
+  const [likeShow, setlikeShow] = useState(false);
+  const [commentText, setCommentText] = useState(null);
+  const fetcher = (url) => fetch(url).then((res) => res.json());
+  const { data: likedBy = [], mutate } = useSWR(
+    `/api/PostLiked?id=${datas?._id}`,
+    fetcher,
+    {
+      refreshInterval: 2000,
+    }
+  );
+
+  const fetchCommens = () => {
+    fetch(`/api/PostComment?id=${datas._id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.length > 0) {
+          console.log(data);
+          setPostComments(data);
+        }
+      });
+  };
+
   const singleData = () => {
     fetch(`/api/Post/${datas?._id}`)
       .then((res) => res.json())
@@ -55,21 +82,17 @@ const SINGLEPOST = ({ datas }) => {
       setLiked(true);
     }
 
-    if (datas?._id) {
-      fetch(`/api/PostLiked?id=${datas?._id}`)
-        .then((res) => res.json())
-        .then((data) => {
-          data?.map((x) => {
-            if (x?._id === user?._id) {
-              setLiked(true);
-            }
-          });
-          setLikedBy(data);
-        });
+    if (likedBy.length > 0) {
+      likedBy?.map((x) => {
+        if (x?._id === user?._id) {
+          setLiked(true);
+        }
+      });
     }
   };
   useEffect(() => {
     singleData();
+    fetchCommens();
   }, []);
 
   const handleLove = () => {
@@ -113,10 +136,126 @@ const SINGLEPOST = ({ datas }) => {
         });
     }
   };
-  const [commentShow, setCommentShow] = useState(false);
-  const [likeShow, setlikeShow] = useState(false);
+
+  const handleComment = (e) => {
+    const transformedValue = e.target.value
+      .replace(/ /g, "&nbsp;")
+      .replace(/\n/g, "<br/>");
+    setCommentText(transformedValue);
+    console.log(commentText);
+  };
+  const submitComment = () => {
+    const newData = {
+      CommenterEmail: user?.email,
+      CommenterProfileId: user?._id,
+      CommenterProfileImg: user?.profileImg,
+      CommenterName: user?.userName,
+      PostId: datas._id,
+      commentText: commentText,
+    };
+    if (commentText === null || commentText === "") {
+      toast.error("Please Type Comment", {
+        id: "CommentAdd",
+      });
+      return;
+    }
+    fetch("/api/PostComment", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        document.getElementById("postInputA").value = "";
+        toast.success("Comment Added", {
+          id: "CommentAdded",
+        });
+        setCommentText(null);
+        fetchCommens();
+      });
+  };
+  const handleCommentDelete = (id) => {
+    fetch(`/api/PostComment?id=${id}`, {
+      method: "DELETE",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        fetchCommens();
+        toast.success("Comment Deleted", {
+          id: "CommentDeleted",
+        });
+        setTimeout(() => {
+          toast.dismiss(id.CommentDeleted);
+        }, 1000);
+      });
+  };
+  const confirmDelete = (ids) => {
+    toast((t) => (
+      <span className="flex flex-col items-center justify-center text-xl">
+        Are You Sure?
+        <div className=" mt-3 flex gap-x-1 text-sm">
+          <button
+            className="bg-purpleLightC rounded-md py-2 px-3 text-white"
+            onClick={() => {
+              toast.dismiss(t.id);
+              handleCommentDelete(ids);
+            }}
+          >
+            Delete Now
+          </button>
+          <button
+            className="text-purpleLightC py-2 px-3"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Cancel
+          </button>
+        </div>
+      </span>
+    ));
+  };
+  const handleDeletePost = (id) => {
+    fetch(`/api/Post/${id}`, {
+      method: "DELETE",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        refetch();
+        toast.success("Post Deleted", {
+          id: "POSTDeleted",
+        });
+        setTimeout(() => {
+          toast.dismiss(id.POSTDeleted);
+        }, 1000);
+      });
+  };
+  const confirmDeletePost = (ids) => {
+    toast((t) => (
+      <span className="flex flex-col items-center justify-center text-xl">
+        Are You Sure?
+        <div className=" mt-3 flex gap-x-1 text-sm">
+          <button
+            className="bg-purpleLightC rounded-md py-2 px-3 text-white"
+            onClick={() => {
+              toast.dismiss(t.id);
+              handleDeletePost(ids);
+            }}
+          >
+            Delete Now
+          </button>
+          <button
+            className="text-purpleLightC py-2 px-3"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Cancel
+          </button>
+        </div>
+      </span>
+    ));
+  };
   return (
-    <div className=" my-3  bg-secondaryBgLight dark:bg-secondaryBgDark rounded-lg">
+    <div className=" my-3 border border-grayC border-opacity-5 dark:border-none bg-secondaryBgLight dark:bg-secondaryBgDark rounded-lg">
       <div className="flex p-4 justify-between  rounded-lg">
         {/*profile */}
         <div className="flex justify-center gap-x-2 items-center">
@@ -144,12 +283,12 @@ const SINGLEPOST = ({ datas }) => {
                 id="verificationBadge"
                 className="tooltip tooltip-bottom font-normal w-[17px] h-full mx-1"
               >
-                {/* <Dynamicimage
+                {/* <Image alt="verifiedImage"
                   width={100}
                   height={100}
                   rounded={"rounded-full "}
                   src={"https://i.ibb.co/02MPvt7/Vector.png"}
-                ></Dynamicimage> */}
+                ></Image> */}
               </div>
             </h1>
             <h1 className="font-bold text-grayC items-center   hidden md:flex dark:text-white ">
@@ -159,12 +298,12 @@ const SINGLEPOST = ({ datas }) => {
                 id="verificationBadge"
                 className="tooltip tooltip-bottom font-normal w-[17px] h-full mx-1"
               >
-                {/* <Dynamicimage
+                {/* <Image alt="verifiedImage"
                   width={100}
                   height={100}
                   rounded={"rounded-full "}
                   src={"https://i.ibb.co/02MPvt7/Vector.png"}
-                ></Dynamicimage> */}
+                ></Image> */}
               </div>
             </h1>
             <h2 className="text-sm dark:text-white text-grayC opacity-90">
@@ -181,7 +320,7 @@ const SINGLEPOST = ({ datas }) => {
       </div>
       <div className="my-3 ">
         <h1
-          className="px-4"
+          className="mx-4 text-sm md:text-base"
           dangerouslySetInnerHTML={{ __html: datas?.postText }}
           id="postText"
         ></h1>
@@ -202,10 +341,17 @@ const SINGLEPOST = ({ datas }) => {
         </div>
       </div>
       <div className="px-4 pb-4">
-        <div className="flex mx-1 justify-between text-xl">
+        <div className="flex text-purpleLightC mx-1 justify-between text-xl">
           <div className="flex gap-x-4 items-center">
             {" "}
-            <div onClick={handleLove} className="flex gap-x-4 items-center">
+            <div
+              onClick={() => {
+                if (user) {
+                  handleLove();
+                }
+              }}
+              className="flex gap-x-4 items-center"
+            >
               {" "}
               {/* <FaHeart /> */}
               {liked ? (
@@ -215,16 +361,32 @@ const SINGLEPOST = ({ datas }) => {
               )}
             </div>
             {/* <FaHeart /> */}
-            <button onClick={() => setCommentShow(!commentShow)}>
+            <button
+              onClick={() => {
+                setlikeShow(false);
+                setCommentShow(!commentShow);
+              }}
+            >
               <GoComment />
             </button>
           </div>
-          <div className="text-2xl">
+          <div className="text-2xl flex gap-x-1">
             <CiBookmark />
+            {datas?.email === user?.email && (
+              <div className="flex text-purpleLightC justify-end">
+                <button onClick={() => confirmDeletePost(datas?._id)}>
+                  <HiOutlineTrash />
+                </button>
+              </div>
+            )}
           </div>
         </div>
         <h1
-          onClick={() => setlikeShow(!likeShow)}
+          onClick={() => {
+            setCommentShow(false);
+            setlikeShow(!likeShow);
+            singleData();
+          }}
           className="text-grayC dark:text-white opacity-80 my-1"
         >
           {postData?.likes?.length || 0} Liked
@@ -238,28 +400,77 @@ const SINGLEPOST = ({ datas }) => {
             commentShow === false && "hidden"
           } relative  rounded-lg`}
         >
-          <div className="textareaWrapper">
-            <textarea
-              onClick={() => {
-                if (!user) {
-                  toast.error("Please Login First", { id: "loginErro" });
-                }
-              }}
-              onKeyUp={(e) => {
-                let textarea = document.querySelector("textarea");
-                textarea.style.height = "63px";
-                let scHeight = textarea.scrollHeight;
-                textarea.style.height = `${scHeight}px`;
-              }}
-              id="postInput2"
-              placeholder="type your comment"
-              className={`border border-secondaryBgLight dark:border-secondaryBgDark   bg-transparent dark:bg-primaryBgDark outline-none rounded-[1rem]  p-4   max-h-full min-h-[60px]`}
-            ></textarea>
+          <div id="commentAddSection">
+            <div className="textareaWrapper">
+              {user && (
+                <textarea
+                  onChange={(e) => {
+                    console.log(e.target.value);
+                    handleComment(e);
+                  }}
+                  onKeyUp={(e) => {
+                    let textarea = document.querySelector("textarea");
+                    textarea.style.height = "63px";
+                    let scHeight = textarea.scrollHeight;
+                    textarea.style.height = `${scHeight}px`;
+                  }}
+                  id="postInputA"
+                  placeholder="type your comment"
+                  className={`border border-purpleLightC border-opacity-20 dark:border-secondaryBgDark   bg-secondaryBgLight dark:bg-primaryBgDark outline-none rounded-[1rem]  p-4   max-h-full min-h-[60px]`}
+                ></textarea>
+              )}
+            </div>
+            <div className="w-[30px] top-[10px] right-4 absolute justify-end mt-2 z-10   flex ">
+              <button
+                onClick={() => {
+                  if (!user) {
+                    return toast.error("Please Login First", {
+                      id: "loginErro",
+                    });
+                  }
+                  submitComment();
+                  console.log("hi");
+                }}
+                className="text-2xl text-purpleLightC  "
+              >
+                <TbBrandTelegram />
+              </button>
+            </div>
           </div>
-          <div className="w-[30px] top-[10px] right-4 absolute justify-end mt-2  flex ">
-            <button className="text-2xl text-purpleLightC  ">
-              <TbBrandTelegram />
-            </button>
+          <div className="mt-4 " id="addedComments">
+            {postComments !== null &&
+              postComments?.map((comment, i) => (
+                <>
+                  <div key={i} className="flex my-4 w-full h-full">
+                    <div className="flex relative">
+                      <Image
+                        alt="commenterImage"
+                        width={200}
+                        height={200}
+                        src={comment?.CommenterProfileImg}
+                        className="w-[40px] h-[40px] rounded-full z-10"
+                      ></Image>
+                      <div className="w-[50px] h-[5px] bg-transparent -z-0 left-4 top-2 absolute border-t dark:border-opacity-100 border-opacity-30 border-grayC"></div>
+                    </div>
+                    <div className="flex w-full bg-primaryBgLight border border-grayC  dark:bg-primaryBgDark dark:border-opacity-100 border-opacity-30 z-0 rounded-2xl p-3 flex-col ms-2">
+                      <h1 className="font-bold text-purpleLightC">
+                        {comment?.CommenterName}
+                      </h1>
+                      <h2
+                        className="mt-3 text-grayC text-sm dark:text-white"
+                        dangerouslySetInnerHTML={{
+                          __html: comment?.commentText,
+                        }}
+                      ></h2>
+                      <div className="flex text-purpleLightC justify-end">
+                        <button onClick={() => confirmDelete(comment?._id)}>
+                          <HiOutlineTrash />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ))}
           </div>
         </div>
       </div>
@@ -269,7 +480,7 @@ const SINGLEPOST = ({ datas }) => {
       <div className="transform duration-300 ">
         {" "}
         {likeShow && postData?.likes?.length > 0 && (
-          <div className=" dark:bg-primaryBgDark border border-grayC p-4 transition-all ease-in delay-200 duration-300 transform">
+          <div className=" dark:bg-primaryBgDark dark:border dark:border-grayC p-4 transition-all ease-in delay-200 duration-300 transform">
             {likedBy?.map((post, i) => (
               <>
                 <div className="flex   items-center gap-x-2" key={i}>
@@ -289,6 +500,7 @@ const SINGLEPOST = ({ datas }) => {
           </div>
         )}
       </div>
+      <CustomToast></CustomToast>
     </div>
   );
 };

@@ -33,3 +33,10 @@ export const PATCH = async (req, { params }) => {
   const res = await PostCollection.updateOne(filter, updatedDoc, options);
   return new NextResponse(JSON.stringify(res));
 };
+
+export const DELETE = async (req, { params }) => {
+  const id = await params.id;
+  const filter = { _id: new ObjectId(id) };
+  const res = await PostCollection.deleteOne(filter);
+  return new NextResponse(JSON.stringify(res));
+};
