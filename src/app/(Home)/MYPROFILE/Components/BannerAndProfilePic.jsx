@@ -101,7 +101,7 @@ const BannerAndProfilePic = () => {
         .then((res) => res.json())
         .then((data) => {
           const ProfileImgUrl = data.data.url;
-          newData = { profileImg: ProfileImgUrl, coverImg: "" };
+          newData = { profileImg: ProfileImgUrl, coverImg: user?.coverImg };
           const newData3 = {
             ...newData2,
             postImg: ProfileImgUrl,
