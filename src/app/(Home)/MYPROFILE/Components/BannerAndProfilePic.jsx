@@ -48,7 +48,6 @@ const BannerAndProfilePic = () => {
   let newData2 = {
     email: user?.email,
     profileId: user?._id,
-    profileImg: user?.profileImg,
     name: user?.userName,
     userId: user?.userId,
     uploadTime: moment().format("MMM Do"),
@@ -74,6 +73,7 @@ const BannerAndProfilePic = () => {
           const newData3 = {
             ...newData2,
             postImg: CoverimgUrl,
+            profileImg: user?.profileImg,
             postText: "updated cover picture",
             category: "postImage",
           };
@@ -107,6 +107,7 @@ const BannerAndProfilePic = () => {
             postImg: ProfileImgUrl,
             postText: "updated profile picture",
             category: "postImage",
+            profileImg: ProfileImgUrl,
           };
           fetch("/api/Post", {
             method: "POST",
@@ -140,6 +141,7 @@ const BannerAndProfilePic = () => {
             postImg: CoverimgUrl,
             postText: "updated cover picture",
             category: "postImage",
+            profileImg: user?.profileImg,
           };
           fetch("/api/Post", {
             method: "POST",
@@ -168,6 +170,7 @@ const BannerAndProfilePic = () => {
             postImg: ProfileImgUrl,
             postText: "updated profile picture",
             category: "postImage",
+            profileImg: ProfileImgUrl,
           };
           fetch("/api/Post", {
             method: "POST",
