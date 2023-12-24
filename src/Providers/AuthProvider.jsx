@@ -11,13 +11,21 @@ import {
 } from "firebase/auth";
 import app from "@/Firebase/firebase.config";
 import { useQuery } from "@tanstack/react-query";
+import useSWR from "swr";
 export const AuthContextProvider = createContext(null);
 
 const auth = getAuth(app);
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const fetcher = (url) => fetch(url).then((res) => res.json());
+  const { data } = useSWR(
+    user ? `/api/NewUser?email=${user?.email}` : null,
+    fetcher,
+    {
+      refreshInterval: 1000,
+    }
+  );
   // const create user function
   const createU = (email, pass) => {
     setLoading(true);
@@ -42,16 +50,16 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (CurrenUser) => {
       setUser(CurrenUser);
-      if (CurrenUser?.email) {
-        fetch(`/api/NewUser?email=${CurrenUser?.email}`)
-          .then((res) => res.json())
-          .then((data) => setUser(data));
-      }
 
       setLoading(false);
     });
     return () => unsubscribe;
   }, []);
+  useEffect(() => {
+    if (data) {
+      setUser(data);
+    }
+  }, [data]);
   console.log(user);
   const authData = {
     createU,

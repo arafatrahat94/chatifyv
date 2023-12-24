@@ -82,6 +82,15 @@ const SINGLEPOST = ({ datas, refetch }) => {
           setLiked(false);
         }
       });
+    if (likedBy.length > 0) {
+      likedBy?.map((x) => {
+        if (x?._id === user?._id) {
+          setLiked(true);
+        } else {
+          setLiked(false);
+        }
+      });
+    }
     const filteringCheck = likesArray.filter((x) => x.liker !== user?._id);
     if (filteringCheck) {
       setLiked(false);
@@ -91,16 +100,19 @@ const SINGLEPOST = ({ datas, refetch }) => {
   };
   useEffect(() => {
     singleData();
-  }, []);
-  if (likedBy.length > 0) {
-    likedBy?.map((x) => {
-      if (x?._id === user?._id) {
-        setLiked(true);
-      } else {
-        setLiked(false);
+    setTimeout(() => {
+      if (likedBy.length > 0) {
+        likedBy?.map((x) => {
+          if (x?._id === user?._id) {
+            setLiked(true);
+          } else {
+            setLiked(false);
+          }
+        });
       }
-    });
-  }
+    }, 2000);
+  }, []);
+
   const handleLove = () => {
     const newData = {
       liker: user?._id,

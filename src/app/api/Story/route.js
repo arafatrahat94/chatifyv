@@ -33,14 +33,14 @@ export const GET = async (req) => {
         JSON.stringify({ signedEmail: res, allUser: filter })
       );
     } else {
-      return new NextResponse(JSON.stringify(null));
+      return new NextResponse(JSON.stringify([]));
     }
   } else {
     const res = await storyCollection.find({}).toArray();
     if (res) {
       return new NextResponse(JSON.stringify(res));
     } else {
-      return new NextResponse(JSON.stringify(res));
+      return new NextResponse(JSON.stringify([]));
     }
   }
 };
