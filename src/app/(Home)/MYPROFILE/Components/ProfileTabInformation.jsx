@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Tab } from "@headlessui/react";
 import Dynamicimage from "@/Utilities/DynamicImage";
 import Image from "next/image";
@@ -8,6 +8,7 @@ import useSWR from "swr";
 import useAuth from "@/hooks/useAuth";
 import SINGLEPOST from "@/Components/HOMEPAGE/SINGLEPOST";
 import { BsPostcard } from "react-icons/bs";
+import { PhotoProvider, PhotoView } from "react-photo-view";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -16,11 +17,9 @@ const ProfileTabInformation = () => {
   const fetcher = (url) => fetch(url).then((res) => res.json());
   const { data: AllPost = [], mutate } = useSWR(
     `/api/ProfilePost?email=${user?.email}`,
-    fetcher,
-    {
-      refreshInterval: 2000,
-    }
+    fetcher
   );
+
   return (
     <div>
       <div className="w-full  flex-col px-2  sm:px-0">
@@ -95,7 +94,24 @@ const ProfileTabInformation = () => {
                 ))}
             </Tab.Panel>
             <Tab.Panel>
-              <p>Photos</p>
+              <div className="grid grid-cols-2 gap-2 lg:grid-cols-3">
+                {AllPost?.length > 0 &&
+                  AllPost.map((z) => (
+                    <>
+                      <PhotoProvider>
+                        <PhotoView src={z.postImg}>
+                          <Image
+                            alt="postImage"
+                            width={1000}
+                            height={1000}
+                            className=" md:rounded-md lg:rounded-none w-full h-full md:h-[300px] lg:h-full lg:w-[600px] md:w-[580px] mx-auto max-h-[300px] object-cover object-center"
+                            src={z.postImg}
+                          ></Image>
+                        </PhotoView>
+                      </PhotoProvider>
+                    </>
+                  ))}
+              </div>
             </Tab.Panel>
             <Tab.Panel>
               <p>Video</p>

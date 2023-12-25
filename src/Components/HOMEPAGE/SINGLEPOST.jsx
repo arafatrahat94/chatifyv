@@ -21,6 +21,7 @@ import { TbBrandTelegram } from "react-icons/tb";
 import toast from "react-hot-toast";
 import CustomToast from "../CustomizedToast/CustomToast";
 import useSWR from "swr";
+import Link from "next/link";
 
 const SINGLEPOST = ({ datas }) => {
   let likesArray = useMemo(() => [], []);
@@ -276,7 +277,10 @@ const SINGLEPOST = ({ datas }) => {
     <div className=" my-3 border border-grayC border-opacity-5 dark:border-none bg-secondaryBgLight dark:bg-secondaryBgDark rounded-lg">
       <div className="flex p-4 justify-between  rounded-lg">
         {/*profile */}
-        <div className="flex justify-center gap-x-2 items-center">
+        <Link
+          href={`/${datas?.email}`}
+          className="flex justify-center gap-x-2 items-center"
+        >
           <div className="md:w-[60px] w-[45px] md:h-[60px]">
             {/* profile image */}
             <Image
@@ -328,7 +332,7 @@ const SINGLEPOST = ({ datas }) => {
               {datas?.userId}
             </h2>
           </div>
-        </div>
+        </Link>
 
         <div className="flex text-postTextColor items-center gap-x-2">
           <h1 className="opacity-75 text-sm md:text-base">

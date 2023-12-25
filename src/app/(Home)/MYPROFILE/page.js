@@ -1,6 +1,4 @@
-import POST from "@/Components/HOMEPAGE/POST";
-import BannerAndProfilePic from "./Components/BannerAndProfilePic";
-import ProfileTabInformation from "./Components/ProfileTabInformation";
+import AllPage from "./AllPage";
 
 export const metadata = {
   title: "Profile | Chatify",
@@ -9,9 +7,7 @@ export const metadata = {
 const MyProfilePage = () => {
   return (
     <div className="mx-[15px] md:mx-[24px]">
-      <BannerAndProfilePic></BannerAndProfilePic>
-      <POST></POST>
-      <ProfileTabInformation></ProfileTabInformation>
+      <AllPage></AllPage>
     </div>
   );
 };

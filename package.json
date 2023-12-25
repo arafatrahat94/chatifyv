@@ -13,6 +13,7 @@
     "@plaiceholder/next": "^3.0.0",
     "@tanstack/react-query": "^5.13.4",
     "firebase": "^10.7.1",
+    "lottie-react": "^2.4.0",
     "moment": "^2.29.4",
     "mongodb": "^6.3.0",
     "next": "14.0.4",
