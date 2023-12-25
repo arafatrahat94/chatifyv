@@ -23,7 +23,7 @@ const ALL = () => {
         {AllPost?.length > 0 &&
           AllPost?.map((datas, i) => (
             <>
-              <SINGLEPOST refetch={refetch} datas={datas} key={i} />
+              <SINGLEPOST datas={datas} key={i} />
             </>
           ))}
       </div>

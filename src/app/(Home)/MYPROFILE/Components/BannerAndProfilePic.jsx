@@ -335,7 +335,7 @@ const BannerAndProfilePic = () => {
                 {user?.userName?.length > 12 &&
                   user?.userName.slice(0, 12) + "..."}
               </h1>
-              <h2 className="italic text-sm text-grayC">@person</h2>
+              <h2 className="italic text-sm text-grayC">{user?.userId}</h2>
               <h2 className="text-xs text-black dark:text-grayC">
                 240 Followers
               </h2>

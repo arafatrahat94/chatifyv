@@ -22,7 +22,7 @@ import toast from "react-hot-toast";
 import CustomToast from "../CustomizedToast/CustomToast";
 import useSWR from "swr";
 
-const SINGLEPOST = ({ datas, refetch }) => {
+const SINGLEPOST = ({ datas }) => {
   let likesArray = useMemo(() => [], []);
   const [postData, setPostData] = useState(null);
   const { user } = useAuth();

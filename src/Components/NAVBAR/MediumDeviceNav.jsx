@@ -17,10 +17,11 @@ import OutsideClickHandler from "react-outside-click-handler";
 import SearchBar from "../SUGGESTION/SearchBar/SearchBar";
 import Suggestion from "../SUGGESTION/Suggestion/Suggestion";
 import useAuth from "@/hooks/useAuth";
-import { TbLogout } from "react-icons/tb";
+import { TbBell, TbLogout, TbSmartHome } from "react-icons/tb";
 import { HiOutlineLogin } from "react-icons/hi";
 import toast from "react-hot-toast";
 import CustomToast from "../CustomizedToast/CustomToast";
+import { BiMessageSquareDetail } from "react-icons/bi";
 const MediumDeviceNav = () => {
   const { user, logOut } = useAuth();
   const [confirmRoute, setConfirmRoute] = useState("");
@@ -116,17 +117,13 @@ const MediumDeviceNav = () => {
               <NavLink
                 onClick={() => setNavOpen(false)}
                 exact={path === "/"}
-                activeClassName="font-bold text-purpleLightC opacity-100"
-                className="flex dark:text-white text-grayC opacity-60 justify-start px-6 mb-[20px]  text-xl items-center gap-x-2"
+                activeClassName="font-bold text-purpleLightC "
+                className="flex dark:text-white text-grayC  justify-start px-6 mb-[20px]  text-xl items-center gap-x-2"
                 href={path}
               >
-                {title === "Home" && <RiHomeLine />}
-                {title === "Notifications" && <GrNotification />}
-                {title === "Messages" && <TiMessages />}
                 {title === "Bookmarks" && <CiBookmark />}
                 {title === "Groups" && <MdOutlineGroups3 />}
-                {title === "Videos" && <IoVideocamOutline />}
-                {title === "Profile" && <CgProfile />}
+
                 {title}
               </NavLink>
             </>
@@ -145,7 +142,7 @@ const MediumDeviceNav = () => {
             <>
               <button
                 onClick={logoutConfirm}
-                className="flex dark:text-white text-grayC opacity-60 justify-start px-6 mb-[20px]  text-xl items-center gap-x-2"
+                className="flex dark:text-white text-grayC  justify-start px-6 mb-[20px]  text-xl items-center gap-x-2"
               >
                 <TbLogout /> Sign out
               </button>
@@ -162,14 +159,14 @@ const MediumDeviceNav = () => {
           <>
             <NavLink
               exact={path === "/"}
-              activeClassName={`font-bold  dark:opacity-100 
-                  text-purpleLightC opacity-100`}
-              className="flex text-grayC  opacity-60 justify-star px-5  text-2xl items-center gap-x-2"
+              activeClassName={`font-bold   
+                  dark:text-purpleLightC text-purpleC `}
+              className="flex text-gray-500 dark:text-grayC   justify-star px-5  text-2xl items-center gap-x-2"
               href={path}
             >
-              {title === "Home" && <RiHomeLine />}
-              {title === "Notifications" && <GrNotification />}
-              {title === "Messages" && <TiMessages />}
+              {title === "Home" && <TbSmartHome />}
+              {title === "Notifications" && <TbBell />}
+              {title === "Messages" && <BiMessageSquareDetail />}
               {title === "Bookmarks" && <CiBookmark />}
               {title === "Groups" && <MdOutlineGroups3 />}
               {title === "Videos" && <IoVideocamOutline />}
