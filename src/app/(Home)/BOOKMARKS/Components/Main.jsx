@@ -3,6 +3,8 @@
 import useAuth from "@/hooks/useAuth";
 import useSWR from "swr";
 import SavedPOst from "./SavedPOst";
+import { useEffect } from "react";
+import { redirect } from "next/navigation";
 
 const BookMarkMain = () => {
   const { user } = useAuth();
@@ -12,7 +14,13 @@ const BookMarkMain = () => {
     `/api/SavePost?email=${user?.email}`,
     fetcher
   );
-  console.log(AllPost);
+
+  useEffect(() => {
+    if (!user) {
+      redirect("/SIgnInUp/SignIn", "replace");
+    }
+  }, []);
+
   return (
     <div>
       {AllPost.length < 1 && (

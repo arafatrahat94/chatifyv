@@ -3,16 +3,54 @@ import Link from "next/link";
 import { IoSettingsSharp } from "react-icons/io5";
 import { AiOutlineFilter } from "react-icons/ai";
 import { MdOutlineCancel } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import Dynamicimage from "@/Utilities/DynamicImage";
+
+import useSWR from "swr";
+import useAuth from "@/hooks/useAuth";
+import moment from "moment";
 const NotificationPageComponent = () => {
   const [activeAll, setActiveAll] = useState(true);
   const [activeFollow, setActiveFollow] = useState(false);
   const [activeLikes, setActiveLikes] = useState(false);
   const [activeComments, setActiveComments] = useState(false);
   const [activeMentions, setActiveMentions] = useState(false);
+  const fetcher = (url) => fetch(url).then((res) => res.json());
+  const { user } = useAuth();
+  const { data: AllCommentsUpdate = [], mutate } = useSWR(
+    `/api/PostCommentLikedNotification/?email=${user?.email}`,
+    fetcher,
+    {
+      refreshInterval: 2000,
+    }
+  );
+  const [showReadButton, setShowReadButton] = useState(true);
+  const handleMarkAsRead = () => {
+    const filter = AllCommentsUpdate.filter((x) => x.status === "unread");
+    filter.map((y) => {
+      fetch(`/api/PostCommentLikedNotification/?id=${y._id}`, {
+        method: "PATCH",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (localStorage !== undefined) {
+            localStorage?.setItem("Notifications", AllCommentsUpdate?.length);
+          }
+          console.log(data);
+          setShowReadButton(false);
+        });
+    });
+  };
 
+  useEffect(() => {
+    const filter = AllCommentsUpdate.filter((x) => x.status === "unread");
+    if (filter.length === 0) {
+      setShowReadButton(false);
+    }
+    if (filter.length > 0) {
+      setShowReadButton(true);
+    }
+  }, []);
   return (
     <div className=" w-full">
       {/* filter modal */}
@@ -133,17 +171,6 @@ const NotificationPageComponent = () => {
               >
                 <AiOutlineFilter />
               </div>
-              {/* <ul
-                tabIndex={0}
-                className="dropdown-content  flex justify-center  z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
-              >
-                <li>
-                  <a>Item 1</a>
-                </li>
-                <li>
-                  <a>Item 2</a>
-                </li>
-              </ul> */}
             </div>
             <Link
               href=""
@@ -153,6 +180,54 @@ const NotificationPageComponent = () => {
             </Link>
           </div>
         </div>
+        {showReadButton && (
+          <button
+            onClick={() => handleMarkAsRead()}
+            className="mx-auto text-sm flex items-center justify-center bg-purpleLightC rounded-lg text-white w-[90%] py-2"
+          >
+            Mark As All Read
+          </button>
+        )}
+      </div>
+
+      <div>
+        {AllCommentsUpdate?.map((x) => (
+          <>
+            {" "}
+            <Link
+              href={`/NOTIFICATIONS/${x.postId}`}
+              className="mx-[17px] bg-secondaryBgLight dark:bg-secondaryBgDark flex justify-between items-center p-3 my-2 rounded-md"
+            >
+              <div className="flex items-center gap-x-2">
+                <Image
+                  src={x?.likerProfilePic}
+                  width={500}
+                  height={500}
+                  alt="profile image"
+                  className="rounded-[1rem] object-cover w-[54px] h-[54px]"
+                ></Image>
+                <div>
+                  <h1 className="font-bold dark:text-purpleLightC text-purpleC">
+                    {x?.likerName}
+                  </h1>
+                  <h1 className="text-sm">
+                    {x.type === "like" ? (
+                      <>liked your post</>
+                    ) : (
+                      <>commented on your post</>
+                    )}{" "}
+                    &nbsp;
+                    <span className="me-2 dark:text-purpleLightC text-purpleC">
+                      {moment(x?.time, "MMM Do YYYY, h:mm a")
+                        .startOf("day")
+                        .fromNow()}
+                    </span>
+                  </h1>
+                </div>
+              </div>
+            </Link>
+          </>
+        ))}
       </div>
     </div>
   );

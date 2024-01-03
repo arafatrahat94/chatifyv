@@ -22,16 +22,30 @@ import { HiOutlineLogin } from "react-icons/hi";
 import toast from "react-hot-toast";
 import CustomToast from "../CustomizedToast/CustomToast";
 import { BiMessageSquareDetail } from "react-icons/bi";
+import useSWR from "swr";
 const MediumDeviceNav = () => {
   const { user, logOut } = useAuth();
   const [confirmRoute, setConfirmRoute] = useState("");
+
+  const fetcher = (url) => fetch(url).then((res) => res.json());
+  const { data: AllCommentsUpdate = [] } = useSWR(
+    `/api/PostCommentLikedNotification/?email=${user?.email}`,
+    fetcher,
+    {
+      refreshInterval: 2000,
+    }
+  );
   useEffect(() => {
     if (user) {
       setConfirmRoute("/MYPROFILE");
     } else {
       setConfirmRoute("/SIgnInUp/SignIn");
     }
-  }, [user]);
+
+    if (localStorage !== undefined) {
+      localStorage?.setItem("Notifications", AllCommentsUpdate.length);
+    }
+  }, [user, AllCommentsUpdate]);
   const navlink = [
     {
       path: "/",
@@ -46,24 +60,24 @@ const MediumDeviceNav = () => {
       title: "Messages",
     },
 
-    {
-      path: "/VIDEOS",
-      title: "Videos",
-    },
+    // {
+    //   path: "/VIDEOS",
+    //   title: "Videos",
+    // },
     {
       path: confirmRoute,
       title: "Profile",
     },
   ];
   const navlink2 = [
-    {
-      path: "/BOOKMARKS",
-      title: "Bookmarks",
-    },
-    {
-      path: "/GROUPS",
-      title: "Groups",
-    },
+    // {
+    //   path: "/BOOKMARKS",
+    //   title: "Bookmarks",
+    // },
+    // {
+    //   path: "/GROUPS",
+    //   title: "Groups",
+    // },
   ];
   const [navOpen, setNavOpen] = useState(false);
   const [error, setError] = useState("");
@@ -112,22 +126,23 @@ const MediumDeviceNav = () => {
           } bg-white dark:bg-secondaryBgDark border-b gap-x-2 min-h-screen md:pt-12 pt-5 transition duration-500 transform z-10`}
         >
           <SearchBar></SearchBar>
-          {navlink2.map(({ path, title }) => (
-            <>
-              <NavLink
-                onClick={() => setNavOpen(false)}
-                exact={path === "/"}
-                activeClassName="font-bold text-purpleLightC "
-                className="flex dark:text-white text-grayC  justify-start px-6 mb-[20px]  text-xl items-center gap-x-2"
-                href={path}
-              >
-                {title === "Bookmarks" && <CiBookmark />}
-                {title === "Groups" && <MdOutlineGroups3 />}
+          {user &&
+            navlink2.map(({ path, title }) => (
+              <>
+                <NavLink
+                  onClick={() => setNavOpen(false)}
+                  exact={path === "/"}
+                  activeClassName="font-bold text-purpleLightC "
+                  className="flex dark:text-white text-grayC  justify-start px-6 mb-[20px]  text-xl items-center gap-x-2"
+                  href={path}
+                >
+                  {title === "Bookmarks" && <CiBookmark />}
+                  {title === "Groups" && <MdOutlineGroups3 />}
 
-                {title}
-              </NavLink>
-            </>
-          ))}
+                  {title}
+                </NavLink>
+              </>
+            ))}
           {!user && (
             <NavLink
               href="/SIgnInUp/SignIn"
@@ -166,6 +181,13 @@ const MediumDeviceNav = () => {
             >
               {title === "Home" && <TbSmartHome />}
               {title === "Notifications" && <TbBell />}
+              {user &&
+                localStorage !== undefined &&
+                localStorage?.getItem("Notifications") < AllCommentsUpdate &&
+                title === "Notifications" && (
+                  <div className="w-[10px] h-[10px] rounded-full bg-gradient-to-r from-red-600 to-red-800 border border-purpleC absolute"></div>
+                )}
+
               {title === "Messages" && <BiMessageSquareDetail />}
               {title === "Bookmarks" && <CiBookmark />}
               {title === "Groups" && <MdOutlineGroups3 />}

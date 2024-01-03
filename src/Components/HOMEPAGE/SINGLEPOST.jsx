@@ -22,6 +22,7 @@ import toast from "react-hot-toast";
 import CustomToast from "../CustomizedToast/CustomToast";
 import useSWR from "swr";
 import Link from "next/link";
+import moment from "moment";
 
 const SINGLEPOST = ({ datas }) => {
   let likesArray = useMemo(() => [], []);
@@ -64,7 +65,6 @@ const SINGLEPOST = ({ datas }) => {
     fetch(`/api/Post/${datas?._id}`)
       .then((res) => res.json())
       .then((sdata) => {
-        console.log(sdata);
         setPostData(sdata);
         if (sdata) {
           sdata?.likes?.map((t) => {
@@ -120,6 +120,7 @@ const SINGLEPOST = ({ datas }) => {
       likerEmail: user?.email,
       likerProfilePic: user?.profileImg,
       likerName: user?.userName,
+      posterEmail: datas?.email,
     };
 
     if (!liked) {
@@ -137,6 +138,22 @@ const SINGLEPOST = ({ datas }) => {
         .then((res) => res.json())
         .then((data) => {
           singleData();
+          const newDataNotification = {
+            ...newData,
+            postId: datas?._id,
+            type: "like",
+            time: moment().format("MMM Do YYYY, h:mm a"),
+            status: "unread",
+          };
+          fetch(`/api/PostCommentLikedNotification`, {
+            method: "POST",
+            headers: {
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify(newDataNotification),
+          })
+            .then((res) => res.json())
+            .then((data) => console.log(data));
         });
     } else if (liked) {
       const filtered = likesArray.filter((x) => x.liker !== user?._id);
@@ -150,7 +167,22 @@ const SINGLEPOST = ({ datas }) => {
         .then((res) => res.json())
         .then((data) => {
           // mutate("/api/Post");
-
+          const newDataNotification = {
+            ...newData,
+            postId: datas?._id,
+            type: "like",
+            time: moment().format("MMM Do YYYY, h:mm a"),
+            status: "unread",
+          };
+          fetch(`/api/PostCommentLikedNotification`, {
+            method: "DELETE",
+            headers: {
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify(newDataNotification),
+          })
+            .then((res) => res.json())
+            .then((data) => console.log(data));
           singleData();
         });
     }
@@ -171,6 +203,7 @@ const SINGLEPOST = ({ datas }) => {
       CommenterName: user?.userName,
       PostId: datas._id,
       commentText: commentText,
+      posterEmail: datas?.email,
     };
     if (commentText === null || commentText === "") {
       toast.error("Please Type Comment", {
@@ -187,6 +220,22 @@ const SINGLEPOST = ({ datas }) => {
     })
       .then((res) => res.json())
       .then((data) => {
+        const newDataNotification = {
+          ...newData,
+          postId: datas?._id,
+          type: "comment",
+          time: moment().format("MMM Do YYYY, h:mm a"),
+          status: "unread",
+        };
+        fetch(`/api/PostCommentLikedNotification`, {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify(newDataNotification),
+        })
+          .then((res) => res.json())
+          .then((data) => console.log(data));
         document.getElementById("postInputA").value = "";
         toast.success("Comment Added", {
           id: "CommentAdded",
@@ -196,11 +245,36 @@ const SINGLEPOST = ({ datas }) => {
       });
   };
   const handleCommentDelete = (id) => {
+    const newData = {
+      CommenterEmail: user?.email,
+      CommenterProfileId: user?._id,
+      CommenterProfileImg: user?.profileImg,
+      CommenterName: user?.userName,
+      PostId: datas._id,
+      commentText: commentText,
+      posterEmail: datas?.email,
+    };
     fetch(`/api/PostComment?id=${id}`, {
       method: "DELETE",
     })
       .then((res) => res.json())
       .then((data) => {
+        const newDataNotification = {
+          ...newData,
+          postId: datas?._id,
+          type: "comment",
+          time: moment().format("MMM Do YYYY, h:mm a"),
+          status: "unread",
+        };
+        fetch(`/api/PostCommentLikedNotification`, {
+          method: "DELETE",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify(newDataNotification),
+        })
+          .then((res) => res.json())
+          .then((data) => console.log(data));
         // fetchCommens();
         toast.success("Comment Deleted", {
           id: "CommentDeleted",
@@ -300,25 +374,27 @@ const SINGLEPOST = ({ datas }) => {
           href={`/${datas?.email}`}
           className="flex justify-center gap-x-2 items-center"
         >
-          <div className="md:w-[60px] w-[45px] md:h-[60px]">
+          <div className="w-[60px]  h-[60px]">
             {/* profile image */}
             <Image
               alt="profile image"
               width={100}
               height={100}
-              className={"rounded-full ring ring-purpleC"}
+              className={
+                "rounded-full object-cover w-full h-full ring ring-purpleC"
+              }
               src={datas?.profileImg}
             ></Image>
           </div>
 
           <div className="">
             <h1
-              data-tip={datas.name}
+              data-tip={datas?.name}
               className="font-bold text-grayC items-center  tooltip tooltip-top text-sm md:hidden dark:text-white flex"
             >
-              {datas.name.length > 15
-                ? datas.name.slice(0, 15) + "..."
-                : datas.name}{" "}
+              {datas?.name?.length > 15
+                ? datas?.name?.slice(0, 15) + "..."
+                : datas?.name}{" "}
               <div
                 data-tip="verified account"
                 id="verificationBadge"
@@ -333,7 +409,7 @@ const SINGLEPOST = ({ datas }) => {
               </div>
             </h1>
             <h1 className="font-bold text-grayC items-center   hidden md:flex dark:text-white ">
-              {datas.name}
+              {datas?.name}
               <div
                 data-tip="verified account"
                 id="verificationBadge"

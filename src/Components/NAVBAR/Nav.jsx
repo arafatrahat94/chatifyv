@@ -8,7 +8,7 @@ import { CiBookmark } from "react-icons/ci";
 import { IoVideocamOutline } from "react-icons/io5";
 import { MdOutlineCancel, MdOutlineGroups3 } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
-import { TbLogout } from "react-icons/tb";
+import { TbBell, TbLogout, TbSmartHome } from "react-icons/tb";
 import "./nav.css";
 import ToogleDarkLight from "../DarkLightmode/ToogleDarkLight";
 import useAuth from "@/hooks/useAuth";
@@ -16,6 +16,8 @@ import { HiOutlineLogin } from "react-icons/hi";
 import { useState } from "react";
 import CustomToast from "../CustomizedToast/CustomToast";
 import toast from "react-hot-toast";
+import { BiMessageSquareDetail } from "react-icons/bi";
+import Image from "next/image";
 const Nav = () => {
   const { user, logOut } = useAuth();
   const navlink = [
@@ -35,14 +37,14 @@ const Nav = () => {
       path: "/BOOKMARKS",
       title: "Bookmarks",
     },
-    {
-      path: "/GROUPS",
-      title: "Groups",
-    },
-    {
-      path: "/VIDEOS",
-      title: "Videos",
-    },
+    // {
+    //   path: "/GROUPS",
+    //   title: "Groups",
+    // },
+    // {
+    //   path: "/VIDEOS",
+    //   title: "Videos",
+    // },
   ];
 
   const [error, setError] = useState("");
@@ -64,11 +66,8 @@ const Nav = () => {
       });
   };
   return (
-    <nav className="top-[70px] sticky hidden lg:block">
-      <div className="flex flex-col xl:ms-5 justify-end lg:px-6 2xl:ms-40 xl:px-16 ">
-        <div>
-          <div className="h-[50px] w-[50px] rounded-[1rem] bg-blue-400 my-3"></div>
-        </div>
+    <nav className="top-[90px] sticky hidden lg:block">
+      <div className="flex flex-col xl:ms-5 justify-end lg:px-6 2xl:ms-40 xl:px-16 mt-5">
         {navlink.map(({ path, title }) => (
           <>
             <NavLink
@@ -77,12 +76,13 @@ const Nav = () => {
               className="flex text-grayC  justify-start  mb-[20px]  text-xl items-center gap-x-2"
               href={path}
             >
-              {title === "Home" && <RiHomeLine />}
-              {title === "Notifications" && <GrNotification />}
-              {title === "Messages" && <TiMessages />}
+              {title === "Home" && <TbSmartHome />}
+              {title === "Notifications" && <TbBell />}
+              {title === "Messages" && <BiMessageSquareDetail />}
               {title === "Bookmarks" && <CiBookmark />}
               {title === "Groups" && <MdOutlineGroups3 />}
               {title === "Videos" && <IoVideocamOutline />}
+              {title === "Profile" && <CgProfile />}
 
               {title}
             </NavLink>
