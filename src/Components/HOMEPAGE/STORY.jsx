@@ -35,8 +35,8 @@ const STORY = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          // console.log(data);
-          if (user && data !== null) {
+          console.log(data);
+          if (user && data !== null && data.length > 0) {
             const { storyImage } = data.signedEmail;
             setAllStory(data.allUser);
             setUsersStory(data.signedEmail);
