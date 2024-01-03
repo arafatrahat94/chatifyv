@@ -589,7 +589,7 @@ const SINGLEPOST = ({ datas }) => {
                         }}
                       ></h2>
                       <div className="flex text-purpleLightC justify-end">
-                        {user.email === comment?.CommenterEmail && (
+                        {user?.email === comment?.CommenterEmail && (
                           <button onClick={() => confirmDelete(comment?._id)}>
                             <HiOutlineTrash />
                           </button>
