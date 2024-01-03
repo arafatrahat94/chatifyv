@@ -9,7 +9,7 @@ import { HiOutlineDotsCircleHorizontal, HiOutlineTrash } from "react-icons/hi";
 import { GoComment } from "react-icons/go";
 
 import { FaHeart } from "react-icons/fa";
-import PostInterection from "./PostInterection";
+
 import Image from "next/image";
 import { useEffect } from "react";
 
@@ -19,11 +19,12 @@ import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 import { TbBrandTelegram } from "react-icons/tb";
 import toast from "react-hot-toast";
-import CustomToast from "../CustomizedToast/CustomToast";
+
 import useSWR from "swr";
 import Link from "next/link";
+import CustomToast from "@/Components/CustomizedToast/CustomToast";
 
-const SINGLEPOST = ({ datas }) => {
+const SavedPOst = ({ datas, mutate }) => {
   let likesArray = useMemo(() => [], []);
   const [postData, setPostData] = useState(null);
   const { user } = useAuth();
@@ -34,7 +35,7 @@ const SINGLEPOST = ({ datas }) => {
   const [likeShow, setlikeShow] = useState(false);
   const [commentText, setCommentText] = useState(null);
   const fetcher = (url) => fetch(url).then((res) => res.json());
-  const { data: likedBy = [], mutate } = useSWR(
+  const { data: likedBy = [] } = useSWR(
     `/api/PostLiked?id=${datas?._id}`,
     fetcher,
     {
@@ -48,17 +49,6 @@ const SINGLEPOST = ({ datas }) => {
       refreshInterval: 2000,
     }
   );
-
-  // const fetchCommens = () => {
-  //   fetch(`/api/PostComment?id=${datas._id}`)
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       if (data.length > 0) {
-  //         console.log(data);
-  //         setPostComments(data);
-  //       }
-  //     });
-  // };
 
   const singleData = () => {
     fetch(`/api/Post/${datas?._id}`)
@@ -273,23 +263,16 @@ const SINGLEPOST = ({ datas }) => {
       </span>
     ));
   };
-  const savePost = () => {
-    const newData = {
-      UserEmail: user?.email,
-      PostId: datas._id,
-    };
-    fetch(`/api/SavePost/`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(newData),
+  const savePost = (id) => {
+    fetch(`/api/SavePost/?id=${id}`, {
+      method: "DELETE",
     })
       .then((res) => res.json())
       .then((data) => {
-        toast.success("Post Saved", {
-          id: "POSTSaved",
+        toast.success("Post removed from bookmarks", {
+          id: "POSTremoved",
         });
+        mutate();
       });
   };
   return (
@@ -414,7 +397,7 @@ const SINGLEPOST = ({ datas }) => {
           <div className="text-2xl flex gap-x-3 items-center">
             {datas?.email === user?.email && (
               <div className="flex text-purpleLightC justify-end">
-                <button onClick={() => savePost()}>
+                <button onClick={() => savePost(datas._id)}>
                   <CiBookmark />
                 </button>
               </div>
@@ -557,4 +540,4 @@ const SINGLEPOST = ({ datas }) => {
   );
 };
 
-export default SINGLEPOST;
+export default SavedPOst;
