@@ -7,7 +7,7 @@ import useSWR from "swr";
 const ALL = () => {
   const fetcher = (url) => fetch(url).then((res) => res.json());
   const { data: AllPost = [], mutate } = useSWR("/api/Post", fetcher, {
-    refreshInterval: 2000,
+    refreshInterval: 5000,
   });
   const refetch = () => {
     mutate();

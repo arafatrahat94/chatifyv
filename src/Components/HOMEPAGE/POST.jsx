@@ -86,9 +86,6 @@ const POST = () => {
               toast.success("Post Shared", {
                 id: "postImageToast",
               });
-              setTimeout(() => {
-                toast.dismiss(postImageToast);
-              }, 2000);
             });
         });
     } else {
