@@ -18,8 +18,19 @@ import CustomToast from "../CustomizedToast/CustomToast";
 import toast from "react-hot-toast";
 import { BiMessageSquareDetail } from "react-icons/bi";
 import Image from "next/image";
+import useSWR from "swr";
 const Nav = () => {
   const { user, logOut } = useAuth();
+  const fetcher = (url) => fetch(url).then((res) => res.json());
+  const { data: AllCommentsUpdate = [] } = useSWR(
+    `/api/PostCommentLikedNotification/?email=${user?.email}`,
+    fetcher,
+    {
+      refreshInterval: 2000,
+    }
+  );
+
+  const filtering = AllCommentsUpdate.filter((x) => x.status === "unread");
   const navlink = [
     {
       path: "/",
@@ -78,6 +89,9 @@ const Nav = () => {
             >
               {title === "Home" && <TbSmartHome />}
               {title === "Notifications" && <TbBell />}
+              {user && filtering?.length > 0 && title === "Notifications" && (
+                <div className="w-[10px] h-[10px] rounded-full bg-gradient-to-r from-red-600 to-red-800 border border-purpleC absolute"></div>
+              )}
               {title === "Messages" && <BiMessageSquareDetail />}
               {title === "Bookmarks" && <CiBookmark />}
               {title === "Groups" && <MdOutlineGroups3 />}

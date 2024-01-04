@@ -42,15 +42,7 @@ const NotificationPageComponent = () => {
     });
   };
 
-  // useEffect(() => {
-  //   const filter = AllCommentsUpdate.filter((x) => x.status === "unread");
-  //   if (filter.length === 0) {
-  //     setShowReadButton(false);
-  //   }
-  //   if (filter.length > 0) {
-  //     setShowReadButton(true);
-  //   }
-  // }, []);
+  console.log(AllCommentsUpdate);
   return (
     <div className=" w-full">
       {/* filter modal */}
@@ -200,7 +192,11 @@ const NotificationPageComponent = () => {
             >
               <div className="flex items-center gap-x-2">
                 <Image
-                  src={x?.likerProfilePic}
+                  src={
+                    x.type === "like"
+                      ? x?.likerProfilePic
+                      : x?.CommenterProfileImg
+                  }
                   width={500}
                   height={500}
                   alt="profile image"
@@ -208,7 +204,7 @@ const NotificationPageComponent = () => {
                 ></Image>
                 <div>
                   <h1 className="font-bold dark:text-purpleLightC text-purpleC">
-                    {x?.likerName}
+                    {x.type === "like" ? x?.likerName : x?.CommenterName}
                   </h1>
                   <h1 className="text-sm">
                     {x.type === "like" ? (
@@ -219,7 +215,7 @@ const NotificationPageComponent = () => {
                     &nbsp;
                     <span className="me-2 dark:text-purpleLightC text-purpleC">
                       {moment(x?.time, "MMM Do YYYY, h:mm a")
-                        .startOf("day")
+                        .startOf("hour")
                         .fromNow()}
                     </span>
                   </h1>
