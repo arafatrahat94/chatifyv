@@ -35,6 +35,8 @@ const MediumDeviceNav = () => {
       refreshInterval: 2000,
     }
   );
+  const filtering = AllCommentsUpdate.filter((x) => x.status === "unread");
+  console.log(filtering);
   useEffect(() => {
     if (user) {
       setConfirmRoute("/MYPROFILE");
@@ -42,9 +44,7 @@ const MediumDeviceNav = () => {
       setConfirmRoute("/SIgnInUp/SignIn");
     }
 
-    if (localStorage !== undefined) {
-      localStorage?.setItem("Notifications", AllCommentsUpdate.length);
-    }
+    localStorage?.setItem("Notifications", AllCommentsUpdate.length);
   }, [user, AllCommentsUpdate]);
   const navlink = [
     {
@@ -181,12 +181,9 @@ const MediumDeviceNav = () => {
             >
               {title === "Home" && <TbSmartHome />}
               {title === "Notifications" && <TbBell />}
-              {user &&
-                localStorage !== undefined &&
-                localStorage?.getItem("Notifications") < AllCommentsUpdate &&
-                title === "Notifications" && (
-                  <div className="w-[10px] h-[10px] rounded-full bg-gradient-to-r from-red-600 to-red-800 border border-purpleC absolute"></div>
-                )}
+              {user && filtering?.length > 0 && title === "Notifications" && (
+                <div className="w-[10px] h-[10px] rounded-full bg-gradient-to-r from-red-600 to-red-800 border border-purpleC absolute"></div>
+              )}
 
               {title === "Messages" && <BiMessageSquareDetail />}
               {title === "Bookmarks" && <CiBookmark />}

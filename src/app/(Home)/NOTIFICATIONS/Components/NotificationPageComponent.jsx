@@ -25,8 +25,8 @@ const NotificationPageComponent = () => {
     }
   );
   const [showReadButton, setShowReadButton] = useState(true);
+  const filter = AllCommentsUpdate.filter((x) => x.status === "unread");
   const handleMarkAsRead = () => {
-    const filter = AllCommentsUpdate.filter((x) => x.status === "unread");
     filter.map((y) => {
       fetch(`/api/PostCommentLikedNotification/?id=${y._id}`, {
         method: "PATCH",
@@ -42,15 +42,15 @@ const NotificationPageComponent = () => {
     });
   };
 
-  useEffect(() => {
-    const filter = AllCommentsUpdate.filter((x) => x.status === "unread");
-    if (filter.length === 0) {
-      setShowReadButton(false);
-    }
-    if (filter.length > 0) {
-      setShowReadButton(true);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const filter = AllCommentsUpdate.filter((x) => x.status === "unread");
+  //   if (filter.length === 0) {
+  //     setShowReadButton(false);
+  //   }
+  //   if (filter.length > 0) {
+  //     setShowReadButton(true);
+  //   }
+  // }, []);
   return (
     <div className=" w-full">
       {/* filter modal */}
@@ -180,7 +180,7 @@ const NotificationPageComponent = () => {
             </Link>
           </div>
         </div>
-        {showReadButton && (
+        {filter.length > 0 && (
           <button
             onClick={() => handleMarkAsRead()}
             className="mx-auto text-sm flex items-center justify-center bg-purpleLightC rounded-lg text-white w-[90%] py-2"
