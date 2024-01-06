@@ -81,6 +81,31 @@ const MediumDeviceNav = () => {
   ];
   const [navOpen, setNavOpen] = useState(false);
   const [error, setError] = useState("");
+  const confirmDeletePost = (id) => {
+    toast((t) => (
+      <span className="flex z-20 flex-col items-center justify-center text-xl">
+        Are You Sure?
+        <div className=" mt-3 flex gap-x-1 text-sm">
+          <button
+            className="bg-purpleLightC rounded-md py-2 px-3 text-white"
+            onClick={() => {
+              setNavOpen(false);
+              toast.dismiss(t.id);
+              logOutHandler();
+            }}
+          >
+            Sign Out
+          </button>
+          <button
+            className="text-purpleLightC py-2 px-3"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Cancel
+          </button>
+        </div>
+      </span>
+    ));
+  };
   const logOutHandler = () => {
     logOut()
       .then(() => {
@@ -94,9 +119,7 @@ const MediumDeviceNav = () => {
         });
       });
   };
-  const logoutConfirm = () => {
-    return document.getElementById("my_modal_2").showModal();
-  };
+
   return (
     <nav className="top-[69px] sticky z-20 lg:hidden">
       <OutsideClickHandler
@@ -123,7 +146,7 @@ const MediumDeviceNav = () => {
         <div
           className={`absolute ${
             navOpen ? "right-0 opacity-100" : "opacity-0 -right-[-120%]"
-          } bg-white dark:bg-secondaryBgDark border-b gap-x-2 min-h-screen md:pt-12 pt-5 transition duration-500 transform z-10`}
+          } bg-white dark:bg-secondaryBgDark border-b gap-x-2 min-h-screen w-[275px] md:pt-12 pt-5 transition duration-500 transform z-10`}
         >
           <SearchBar></SearchBar>
           {user &&
@@ -156,7 +179,10 @@ const MediumDeviceNav = () => {
           {user && (
             <>
               <button
-                onClick={logoutConfirm}
+                onClick={() => {
+                  setNavOpen(!navOpen);
+                  confirmDeletePost(user);
+                }}
                 className="flex dark:text-white text-grayC  justify-start px-6 mb-[20px]  text-xl items-center gap-x-2"
               >
                 <TbLogout /> Sign out
@@ -194,43 +220,6 @@ const MediumDeviceNav = () => {
           </>
         ))}
       </div>{" "}
-      {/* logout confirm handler modal*/}
-      <dialog id="my_modal_2" className="modal p-0">
-        <div className="modal-box  dark:bg-primaryBgDark max-w-[400px] rounded-md ">
-          <form method="dialog">
-            {/* if there is a button in form, it will close the modal */}
-            <button className="btn btn-sm btn-circle text-center flex items-center justify-center bg-purpleLightC btn-ghost absolute text-white right-2 top-2">
-              <>
-                <MdOutlineCancel />
-              </>
-            </button>
-          </form>
-          <h3 className="font-bold uppercase flex justify-center mt-10 scale-75 text-lg">
-            <div class="loader23">
-              <span>Chatify</span>
-              <span>Chatify</span>
-            </div>
-          </h3>
-          <h1 className="mt-6 text-center">Are You Sure?</h1>
-          <p className="py-4 flex gap-x-2 justify-center text-xl text-center font-bold text-purpleLightC mt-2 uppercase">
-            <button
-              className="btn text-white bg-purpleLightC"
-              onClick={() => {
-                logOutHandler();
-                document.getElementById("my_modal_2").close();
-              }}
-            >
-              Confirm
-            </button>
-            <button
-              onClick={() => document.getElementById("my_modal_2").close()}
-              className="btn border border-purpleLightC bg-transparent text-purpleLightC"
-            >
-              Cancel
-            </button>
-          </p>
-        </div>
-      </dialog>
       <CustomToast />
     </nav>
   );

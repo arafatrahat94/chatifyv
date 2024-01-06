@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 
@@ -15,17 +17,14 @@ const SearchBar = () => {
       .then((data) => {
         setSearchResult(data);
         console.log(data);
+
         setsearchLoading(false);
       });
   };
+
   return (
     <div>
-      <div
-        // onClick={() =>
-        //   document.getElementById("my_modal_SearchBar").showModal()
-        // }
-        className="relative mb-[20px] lg:mb-0 mt-[20px] flex justify-center items-center"
-      >
+      <div className="relative mb-[20px] lg:mb-0 mt-[20px] flex justify-center items-center">
         <input
           onChange={(e) => {
             setSearchText(e.target.value);
@@ -48,27 +47,36 @@ const SearchBar = () => {
           )}
         </button>
       </div>
-      <div>
+      <div className="mt-5 mb-5">
+        {searchResult.length > 0 && (
+          <h1 className="ms-5 mb-2 text-purpleLightC">Search Result :</h1>
+        )}
+
         {searchResult.length > 0 &&
           searchResult.map((x) => (
             <>
-              <div>
-                <h1>h</h1>
-              </div>
+              <Link
+                href={`/${x?.email}`}
+                className="mx-5 bg-secondaryBgLight dark:bg-secondaryBgDark p-1
+              rounded-2xl flex items-center border border-purpleLightC"
+              >
+                <div className="w-[40px] h-[40px]">
+                  <Image
+                    src={x?.profileImg}
+                    alt="profileImg"
+                    width={500}
+                    height={500}
+                    className="object-cover rounded-full w-full h-full"
+                  ></Image>
+                </div>
+                <div>
+                  <h1 className="text-sm ms-1">{x?.userName}</h1>
+                </div>
+              </Link>
             </>
           ))}
       </div>
       {/* Open the modal using document.getElementById('ID').showModal() method */}
-
-      {/* <dialog id="my_modal_SearchBar" className="modal z-10">
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">Hello!</h3>
-          <p className="py-4">Press ESC key or click outside to close</p>
-        </div>
-        <form method="dialog" className="modal-backdrop">
-          <button>close</button>
-        </form>
-      </dialog> */}
     </div>
   );
 };

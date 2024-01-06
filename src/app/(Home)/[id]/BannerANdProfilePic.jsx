@@ -9,6 +9,9 @@ import useAuth from "@/hooks/useAuth";
 import toast from "react-hot-toast";
 import CustomToast from "@/Components/CustomizedToast/CustomToast";
 import ProfileTabInformations from "./ProfileTabInformations";
+import { BiMessageSquareDetail } from "react-icons/bi";
+import { TbSend } from "react-icons/tb";
+import { MdOutlineCancel } from "react-icons/md";
 const BannerANdProfilePic = ({ email }) => {
   const { user } = useAuth();
   const fetcher = (url) => fetch(url).then((res) => res.json());
@@ -123,6 +126,25 @@ const BannerANdProfilePic = ({ email }) => {
           });
       });
   };
+  const sendMessage = () => {
+    toast(
+      (t) => (
+        <span className="flex items-center justify-center gap-x-2 p-0">
+          <input
+            placeholder="type your message"
+            className="p-3 rounded-md focus:outline-none bg-grayC bg-opacity-10 dark:border border-grayC"
+            type="text"
+          />
+
+          <button className="flex gap-x-3">
+            <TbSend className="ms-2" />
+            <MdOutlineCancel onClick={() => toast.dismiss(t.id)} />
+          </button>
+        </span>
+      ),
+      { id: "sendMesage" }
+    );
+  };
   return (
     <div>
       <div>
@@ -167,6 +189,14 @@ const BannerANdProfilePic = ({ email }) => {
           </div>
           <div className="me-3 gap-1 flex-col flex items-center">
             <button
+              onClick={() => sendMessage(email)}
+              type="button"
+              className="md:px-6 px-4 py-2  rounded-[1rem] flex justify-center items-center  text-purpleLightC"
+            >
+              <BiMessageSquareDetail />
+              <span className="hidden md:block">&nbsp; Message</span>
+            </button>
+            <button
               onClick={() => {
                 if (user?.email === User.email) {
                   return toast.error("You can't follow yourself", {
@@ -198,13 +228,6 @@ const BannerANdProfilePic = ({ email }) => {
                   <span className="hidden md:block"> &nbsp; Follow</span>
                 </>
               )}
-            </button>
-            <button
-              type="button"
-              className="md:px-6 px-4 py-2  rounded-[1rem] flex justify-center items-center  text-purpleLightC"
-            >
-              <FaShareAlt />
-              <span className="hidden md:block">&nbsp; Share</span>
             </button>
           </div>
         </div>

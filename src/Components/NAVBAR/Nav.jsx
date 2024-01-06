@@ -29,16 +29,9 @@ const Nav = () => {
       refreshInterval: 2000,
     }
   );
-  const { data: AllPost = [] } = useSWR("/api/Post", fetcher, {
-    refreshInterval: 2000,
-  });
-  const [postcount, setPostCount] = useState(0);
+
   const filtering = AllCommentsUpdate.filter((x) => x.status === "unread");
-  useEffect(() => {
-    if (AllPost !== undefined) {
-      setPostCount(AllPost.length);
-    }
-  }, []);
+
   const navlink = [
     {
       path: "/",
@@ -97,11 +90,7 @@ const Nav = () => {
             >
               {title === "Home" && <TbSmartHome />}
               {title === "Notifications" && <TbBell />}
-              {user &&
-                postcount?.length < AllPost?.length &&
-                title === "Home" && (
-                  <div className="w-[10px] h-[10px] rounded-full bg-gradient-to-r from-red-600 to-red-800 border border-purpleC absolute"></div>
-                )}
+
               {user && filtering?.length > 0 && title === "Notifications" && (
                 <div className="w-[10px] h-[10px] rounded-full bg-gradient-to-r from-red-600 to-red-800 border border-purpleC absolute"></div>
               )}
