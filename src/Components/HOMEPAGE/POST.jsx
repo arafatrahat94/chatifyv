@@ -12,10 +12,14 @@ import useAuth from "@/hooks/useAuth";
 import CustomToast from "../CustomizedToast/CustomToast";
 import toast from "react-hot-toast";
 import moment from "moment";
+import usePOST from "@/hooks/usePOST";
+import { TbAlignBoxBottomCenter, TbPhotoSquareRounded } from "react-icons/tb";
+import { IoVideocam } from "react-icons/io5";
 const POST = () => {
   const { user } = useAuth();
   const [postLater, setPostLater] = useState(false);
   const [posttext, setposttext] = useState();
+  const { AllPost, mutateAllPost } = usePOST();
   // post image container
   const [postImage, setPostImage] = useState("");
   const imgHostingUrl = `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMG_KEY}`;
@@ -60,8 +64,6 @@ const POST = () => {
       })
         .then((res) => res.json())
         .then((idata) => {
-          console.log(idata);
-
           const newData2 = {
             ...newData,
             postImg: idata.data.display_url,
@@ -82,7 +84,8 @@ const POST = () => {
               setPostImage("");
               postInput.value = "";
               setPostImageWillBeUploaded(null);
-              console.log(data);
+
+              mutateAllPost();
               toast.success("Post Shared", {
                 id: "postImageToast",
               });
@@ -112,7 +115,7 @@ const POST = () => {
           setPostImage("");
           setPostImageWillBeUploaded(null);
           postInput.value = "";
-          console.log(data);
+          mutateAllPost();
           toast.success("Post Shared", {
             id: "postText",
           });
@@ -192,39 +195,26 @@ const POST = () => {
               {/* TODO: post features */}
               <div className="flex -mt-4 py-1 left-6 gap-x-6 w-[80%] relative   ">
                 <label className="hover:delay-300 hover:transition lg:hover:tooltip lg:hover:tooltip-bottom">
-                  <Image
-                    draggable={false}
-                    src={pictureImg}
-                    alt="picture"
-                  ></Image>
+                  <TbPhotoSquareRounded className="text-2xl" />
                   <input
                     onChange={onImageChange}
                     type="file"
                     className="w-[20px] opacity-0 top-0 absolute z-1"
                   ></input>
                 </label>
-                <button
-                  className="hover:delay-300 hover:transition hover:tooltip hover:tooltip-bottom"
-                  data-tip="add voice (v4:feature)"
-                >
-                  <Image
-                    draggable={false}
-                    src={microphoneImg}
-                    alt="picture"
-                  ></Image>
-                </button>
-                <button
+
+                {/* <button
                   className="hover:delay-300 hover:transition hover:tooltip hover:tooltip-bottom"
                   data-tip="add poll (v4:feature)"
                 >
-                  <Image draggable={false} src={pollImg} alt="picture"></Image>
-                </button>
-                <button
+                  <TbAlignBoxBottomCenter className="text-2xl" />
+                </button> */}
+                {/* <button
                   className="hover:delay-300 hover:transition hover:tooltip hover:tooltip-bottom"
                   data-tip="add video (v4:feature)"
                 >
-                  <Image draggable={false} src={videoImg} alt="picture"></Image>
-                </button>
+                  <IoVideocam className="text-2xl" />
+                </button> */}
               </div>
               {/* TODO: post button */}
               <div className="flex justify-end m-4">

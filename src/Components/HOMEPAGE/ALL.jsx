@@ -4,14 +4,10 @@ import { CiFilter } from "react-icons/ci";
 import SINGLEPOST from "./SINGLEPOST";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
+import usePOST from "@/hooks/usePOST";
 const ALL = () => {
-  const fetcher = (url) => fetch(url).then((res) => res.json());
-  const { data: AllPost = [], mutate } = useSWR("/api/Post", fetcher, {
-    refreshInterval: 5000,
-  });
-  const refetch = () => {
-    mutate();
-  };
+  const { AllPost, mutateAllPost } = usePOST();
+
   return (
     <div className="mb-4">
       <div className="flex items-center justify-between">

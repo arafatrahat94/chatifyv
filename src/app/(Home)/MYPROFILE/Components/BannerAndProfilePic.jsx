@@ -3,7 +3,7 @@ import CustomToast from "@/Components/CustomizedToast/CustomToast";
 import useAuth from "@/hooks/useAuth";
 import moment from "moment";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { FaRegEdit, FaShareAlt } from "react-icons/fa";
@@ -42,7 +42,9 @@ const BannerAndProfilePic = () => {
       setProfileImageShow(URL.createObjectURL(event.target.files[0]));
     }
   };
-  const [loader, serLoader] = useState(false);
+
+  const [imgCoverloader, seImgCoverLoader] = useState(false);
+  // const [loader, serLoader] = useState(false);
 
   let newData;
   let newData2 = {
@@ -224,7 +226,7 @@ const BannerAndProfilePic = () => {
     <div className=" relative">
       <div>
         <div className="h-[110px] md:h-[177px] object-cover object-center mt-4 relative">
-          {user?.coverImg ? (
+          {user?.coverImg && user?.coverImg !== "" ? (
             <Image
               alt="coverImage"
               src={user?.coverImg !== null && user?.coverImg}

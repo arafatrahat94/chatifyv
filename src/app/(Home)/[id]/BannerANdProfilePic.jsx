@@ -12,6 +12,7 @@ import ProfileTabInformations from "./ProfileTabInformations";
 import { BiMessageSquareDetail } from "react-icons/bi";
 import { TbSend } from "react-icons/tb";
 import { MdOutlineCancel } from "react-icons/md";
+import { FcPicture } from "react-icons/fc";
 const BannerANdProfilePic = ({ email }) => {
   const { user } = useAuth();
   const fetcher = (url) => fetch(url).then((res) => res.json());
@@ -28,10 +29,10 @@ const BannerANdProfilePic = ({ email }) => {
         setUser(data);
       });
   };
-  const filtering = followersArray.filter(
+  const filtering = followersArray?.filter(
     (x) => x.followerEmail === user?.email
   );
-  console.log(filtering.length);
+
   useEffect(() => {
     setTimeout(() => {
       dataFetch();
@@ -40,7 +41,7 @@ const BannerANdProfilePic = ({ email }) => {
       setFollowingArray(user?.following);
     }
   }, []);
-  console.log(followersArray.length);
+
   const followNow = () => {
     const FolloweData = {
       followerName: user?.name,
@@ -126,18 +127,48 @@ const BannerANdProfilePic = ({ email }) => {
           });
       });
   };
+
+  const [message, setMessage] = useState("");
+  const messageInit = () => {
+    const NewData = {
+      Messagefrom: user,
+      MessageTo: User,
+      Message: message,
+    };
+  };
+
   const sendMessage = () => {
     toast(
       (t) => (
-        <span className="flex items-center justify-center gap-x-2 p-0">
+        <span className="flex z-0 items-center justify-center gap-x-2 p-0">
           <input
+            onChange={(e) => {
+              setMessage(
+                e.target.value.replace(/ /g, "&nbsp;").replace(/\n/g, "<br/>")
+              );
+            }}
             placeholder="type your message"
-            className="p-3 rounded-md focus:outline-none bg-grayC bg-opacity-10 dark:border border-grayC"
+            className="p-3 rounded-md focus:outline-none bg-grayC bg-opacity-10  dark:border border-grayC"
             type="text"
           />
 
           <button className="flex gap-x-3">
-            <TbSend className="ms-2" />
+            <TbSend
+              onClick={() => {
+                if (message === "") {
+                  toast.error("please type your message first", {
+                    id: "messageNotTyped",
+                  });
+                  setTimeout(() => {
+                    toast.dismiss(t.messageNotTyped);
+                  }, 3000);
+                  toast.dismiss(t.id);
+                } else {
+                  messageInit();
+                }
+              }}
+              className="ms-2"
+            />
             <MdOutlineCancel onClick={() => toast.dismiss(t.id)} />
           </button>
         </span>
@@ -147,93 +178,108 @@ const BannerANdProfilePic = ({ email }) => {
   };
   return (
     <div>
-      <div>
-        <div className="h-[110px] md:h-[177px] object-cover object-center mt-4 relative">
-          <Image
-            alt="coverImage"
-            src={User?.coverImg !== null && User?.coverImg}
-            width={500}
-            height={500}
-            className="rounded-[1rem] h-full w-full object-cover"
-          ></Image>
-        </div>
-        <div className="flex mt-2 items-center w-full   relative justify-between">
-          <div className="flex gap-x-2 items-center">
-            <div className="md:w-[90px] w-[70px] h-[70px] md:h-[90px] rounded-full relative ms-3">
-              <Image
-                alt="profileImg"
-                src={User?.profileImg !== null && User?.profileImg}
-                width={500}
-                height={500}
-                className="rounded-full h-full w-full object-cover"
-              ></Image>
-            </div>
-
-            <div>
-              <h1 className="font-semibold text-purpleC dark:text-purpleLightC hidden md:block md:text-xl">
-                {User?.userName}
-              </h1>
-              <h1
-                data-tip={User?.userName}
-                className="font-semibold tooltip tooltip-bottom md:hidden text-purpleC dark:text-purpleLightC md:text-xl"
-              >
-                {User?.userName?.length > 12 &&
-                  User?.userName.slice(0, 12) + "..."}
-              </h1>
-              <h2 className="italic text-sm text-grayC">{User?.userId}</h2>
-              <h2 className="text-xs text-black dark:text-grayC">
-                {User?.followers?.length > 0 ? User?.followers?.length : 0}{" "}
-                Followers
-              </h2>
-            </div>
+      {User?.length > 0 ? (
+        <>
+          <div className="w-full min-h-screen flex justify-center items-center">
+            <span className="loading loading-spinner loading-lg"></span>
           </div>
-          <div className="me-3 gap-1 flex-col flex items-center">
-            <button
-              onClick={() => sendMessage(email)}
-              type="button"
-              className="md:px-6 px-4 py-2  rounded-[1rem] flex justify-center items-center  text-purpleLightC"
-            >
-              <BiMessageSquareDetail />
-              <span className="hidden md:block">&nbsp; Message</span>
-            </button>
-            <button
-              onClick={() => {
-                if (user?.email === User.email) {
-                  return toast.error("You can't follow yourself", {
-                    id: "selfFollowNotAllowed",
-                  });
-                } else {
-                  if (filtering.length > 0) {
-                    UnfollowNow();
-                  } else {
-                    followNow();
-                  }
-                }
-              }}
-              type="button"
-              className={`${
-                filtering.length > 0
-                  ? "text-purpleLightC"
-                  : "text-white bg-purpleC dark:bg-purpleLightC"
-              } md:px-6 px-4 py-3  rounded-[1rem] flex justify-center items-center  `}
-            >
-              {filtering.length > 0 ? (
-                <>
-                  <SlUserFollowing />{" "}
-                  <span className="hidden md:block"> &nbsp; Following</span>
-                </>
+        </>
+      ) : (
+        <>
+          <div>
+            <div className="h-[110px] md:h-[177px] object-cover object-center mt-4 relative">
+              {User?.coverImg !== "" ? (
+                <Image
+                  alt="coverImage"
+                  src={User?.coverImg !== null && User?.coverImg}
+                  width={500}
+                  height={500}
+                  className="rounded-[1rem] h-full w-full object-cover"
+                ></Image>
               ) : (
-                <>
-                  <SlUserFollow />
-                  <span className="hidden md:block"> &nbsp; Follow</span>
-                </>
+                <FcPicture className="text-3xl relative top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
               )}
-            </button>
+            </div>
+            <div className="flex mt-2 items-center w-full   relative justify-between">
+              <div className="flex gap-x-2 items-center">
+                <div className="md:w-[90px] w-[70px] h-[70px] md:h-[90px] rounded-full relative ms-3">
+                  <Image
+                    alt="profileImg"
+                    src={User?.profileImg !== null && User?.profileImg}
+                    width={500}
+                    height={500}
+                    className="rounded-full h-full w-full object-cover"
+                  ></Image>
+                </div>
+
+                <div>
+                  <h1 className="font-semibold text-purpleC dark:text-purpleLightC hidden md:block md:text-xl">
+                    {User?.userName}
+                  </h1>
+                  <h1
+                    data-tip={User?.userName}
+                    className="font-semibold tooltip tooltip-bottom md:hidden text-purpleC dark:text-purpleLightC md:text-xl"
+                  >
+                    {User?.userName?.length > 12 &&
+                      User?.userName.slice(0, 12) + "..."}
+                  </h1>
+                  <h2 className="italic text-sm text-grayC">{User?.userId}</h2>
+                  <h2 className="text-xs text-black dark:text-grayC">
+                    {User?.followers?.length > 0 ? User?.followers?.length : 0}{" "}
+                    Followers
+                  </h2>
+                </div>
+              </div>
+              <div className="me-3 gap-1 flex-col flex items-center">
+                <button
+                  onClick={() => sendMessage(email)}
+                  type="button"
+                  className="md:px-6 px-4 py-2  rounded-[1rem] flex justify-center items-center  text-purpleLightC"
+                >
+                  <BiMessageSquareDetail />
+                  <span className="hidden md:block">&nbsp; Message</span>
+                </button>
+                <button
+                  onClick={() => {
+                    if (user?.email === User.email) {
+                      return toast.error("You can't follow yourself", {
+                        id: "selfFollowNotAllowed",
+                      });
+                    } else {
+                      if (filtering?.length > 0) {
+                        UnfollowNow();
+                      } else {
+                        followNow();
+                      }
+                    }
+                  }}
+                  type="button"
+                  className={`${
+                    filtering?.length > 0
+                      ? "text-purpleLightC"
+                      : "text-white bg-purpleC dark:bg-purpleLightC"
+                  } md:px-6 px-4 py-3  rounded-[1rem] flex justify-center items-center  `}
+                >
+                  {filtering?.length > 0 ? (
+                    <>
+                      <SlUserFollowing />{" "}
+                      <span className="hidden md:block"> &nbsp; Following</span>
+                    </>
+                  ) : (
+                    <>
+                      <SlUserFollow />
+                      <span className="hidden md:block"> &nbsp; Follow</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+
+          <ProfileTabInformations email={User?.email}></ProfileTabInformations>
+        </>
+      )}
       <CustomToast></CustomToast>
-      <ProfileTabInformations email={User?.email}></ProfileTabInformations>
     </div>
   );
 };

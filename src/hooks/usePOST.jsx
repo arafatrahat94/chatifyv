@@ -1,18 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
-import useAuth from "./useAuth";
+import useSWR from "swr";
 
 const usePOST = () => {
-  const {
-    isPending,
-    error,
-    data: AllPost = [],
-    refetch,
-  } = useQuery({
-    queryKey: ["posts"],
-    queryFn: () => fetch(`/api/Post`).then((res) => res.json()),
-  });
-  console.log(AllPost);
-  return [AllPost, refetch];
+  const fetcher = (url) => fetch(url).then((res) => res.json());
+  const { data: AllPost = [], mutate: mutateAllPost } = useSWR(
+    "/api/Post",
+    fetcher,
+    {
+      refreshInterval: 10000,
+    }
+  );
+
+  return { AllPost, mutateAllPost };
 };
 
 export default usePOST;

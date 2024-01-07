@@ -35,19 +35,13 @@ const SINGLEPOST = ({ datas }) => {
   const [likeShow, setlikeShow] = useState(false);
   const [commentText, setCommentText] = useState(null);
   const fetcher = (url) => fetch(url).then((res) => res.json());
-  const { data: likedBy = [], mutate } = useSWR(
+  const { data: likedBy = [], mutate: mutateLikedBy } = useSWR(
     `/api/PostLiked?id=${datas?._id}`,
-    fetcher,
-    {
-      refreshInterval: 2000,
-    }
+    fetcher
   );
-  const { data: postComments = [] } = useSWR(
+  const { data: postComments = [], mutate: mutatePostComments } = useSWR(
     `/api/PostComment?id=${datas._id}`,
-    fetcher,
-    {
-      refreshInterval: 2000,
-    }
+    fetcher
   );
 
   // const fetchCommens = () => {
@@ -137,7 +131,9 @@ const SINGLEPOST = ({ datas }) => {
       })
         .then((res) => res.json())
         .then((data) => {
+          mutateLikedBy();
           singleData();
+
           const newDataNotification = {
             ...newData,
             postId: datas?._id,
@@ -220,6 +216,7 @@ const SINGLEPOST = ({ datas }) => {
     })
       .then((res) => res.json())
       .then((data) => {
+        mutatePostComments();
         const newDataNotification = {
           ...newData,
           postId: datas?._id,

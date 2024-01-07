@@ -19,18 +19,12 @@ import toast from "react-hot-toast";
 import { BiMessageSquareDetail } from "react-icons/bi";
 import Image from "next/image";
 import useSWR from "swr";
+import useNotification from "@/hooks/useNotification";
 const Nav = () => {
   const { user, logOut } = useAuth();
-  const fetcher = (url) => fetch(url).then((res) => res.json());
-  const { data: AllCommentsUpdate = [] } = useSWR(
-    `/api/PostCommentLikedNotification/?email=${user?.email}`,
-    fetcher,
-    {
-      refreshInterval: 2000,
-    }
-  );
 
-  const filtering = AllCommentsUpdate.filter((x) => x.status === "unread");
+  const AllCommentsUpdate = useNotification();
+  const filtering = AllCommentsUpdate?.filter((x) => x.status === "unread");
 
   const navlink = [
     {

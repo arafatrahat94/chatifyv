@@ -3,24 +3,19 @@ import POST from "@/Components/HOMEPAGE/POST";
 import BannerAndProfilePic from "./Components/BannerAndProfilePic";
 import ProfileTabInformation from "./Components/ProfileTabInformation";
 import { useEffect, useState } from "react";
+import useAuth from "@/hooks/useAuth";
 // import * as loadingAnimation from "../../../Assets/xVWj8XhdGl.json";
 // import Lottie from "lottie-react";
 const AllPage = () => {
-  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-  }, []);
+  console.log(user);
   return (
     <div>
-      {loading ? (
+      {user?.length > 0 ? (
         <>
-          <div className="w-full h-screen flex justify-center items-center">
-            {/* <Lottie
-              animationData={!document === undefined && loadingAnimation}
-            ></Lottie> */}
+          <div className="w-full min-h-screen flex justify-center items-center">
+            <span className="loading loading-spinner loading-lg"></span>
           </div>
         </>
       ) : (
