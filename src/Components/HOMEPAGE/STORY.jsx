@@ -22,6 +22,7 @@ const auth = getAuth(app);
 const STORY = () => {
   let [usersStory, setUsersStory] = useState(null);
   let [storySwiper, setStorySwiper] = useState(null);
+
   // let [storyArray, setStoryArray] = useState([]);
   let storyArray = useMemo(() => [], []);
   const [allStory, setAllStory] = useState(null);
@@ -159,6 +160,7 @@ const STORY = () => {
           });
       });
   };
+  console.log(usersStory);
   const handleDelete = () => {
     const storyArray2 = storySwiper?.filter(
       (x) => x !== storySwiper[currentPage]

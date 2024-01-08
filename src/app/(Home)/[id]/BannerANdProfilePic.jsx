@@ -13,6 +13,8 @@ import { BiMessageSquareDetail } from "react-icons/bi";
 import { TbSend } from "react-icons/tb";
 import { MdOutlineCancel } from "react-icons/md";
 import { FcPicture } from "react-icons/fc";
+import moment from "moment";
+
 const BannerANdProfilePic = ({ email }) => {
   const { user } = useAuth();
   const fetcher = (url) => fetch(url).then((res) => res.json());
@@ -21,6 +23,7 @@ const BannerANdProfilePic = ({ email }) => {
 
   const [User, setUser] = useState([]);
   const [following, setFollowing] = useState(false);
+  const [messageLoading, setMessageLoading] = useState(false);
   const dataFetch = () => {
     fetch(`/api/NewUser?email=${email}`)
       .then((res) => res.json())
@@ -129,48 +132,82 @@ const BannerANdProfilePic = ({ email }) => {
   };
 
   const [message, setMessage] = useState("");
-  const messageInit = () => {
+  const messageInit = (t) => {
     const NewData = {
-      Messagefrom: user,
-      MessageTo: User,
-      Message: message,
+      Messagefrom: user?.email,
+      MessageTo: User?.email,
+      Message: message.replace(/ /g, "&nbsp;").replace(/\n/g, "<br/>"),
+      time: moment().format("MMMM Do YYYY, h:mm:ss a"),
+      status: "unread",
     };
+
+    fetch(`/api/Message`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(NewData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        toast.success("Message Sent", { id: "messageSent" });
+        setTimeout(() => {
+          toast.dismiss(t.messageSent);
+        }, 3000);
+      });
   };
 
   const sendMessage = () => {
     toast(
       (t) => (
         <span className="flex z-0 items-center justify-center gap-x-2 p-0">
-          <input
-            onChange={(e) => {
-              setMessage(
-                e.target.value.replace(/ /g, "&nbsp;").replace(/\n/g, "<br/>")
-              );
-            }}
-            placeholder="type your message"
-            className="p-3 rounded-md focus:outline-none bg-grayC bg-opacity-10  dark:border border-grayC"
-            type="text"
-          />
+          {messageLoading === true ? (
+            <>
+              <div className="flex w-full justify-center h-full items-center">
+                <span className="loading loading-spinner loading-lg"></span>
+              </div>
+            </>
+          ) : (
+            <>
+              <input
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  setMessage(e.target.value);
+                }}
+                placeholder="type your message"
+                className="p-3 rounded-md focus:outline-none dark:bg-primaryBgDark bg-opacity-10  dark:border border-grayC"
+                type="text"
+              />
 
-          <button className="flex gap-x-3">
-            <TbSend
-              onClick={() => {
-                if (message === "") {
-                  toast.error("please type your message first", {
-                    id: "messageNotTyped",
-                  });
-                  setTimeout(() => {
-                    toast.dismiss(t.messageNotTyped);
-                  }, 3000);
-                  toast.dismiss(t.id);
-                } else {
-                  messageInit();
-                }
-              }}
-              className="ms-2"
-            />
-            <MdOutlineCancel onClick={() => toast.dismiss(t.id)} />
-          </button>
+              <button className="flex gap-x-3">
+                <TbSend
+                  onClick={() => {
+                    if (message === "") {
+                      toast.error("please type your message first", {
+                        id: "messageNotTyped",
+                      });
+                      setTimeout(() => {
+                        toast.dismiss(t.messageNotTyped);
+                      }, 3000);
+                      toast.dismiss(t.id);
+                    } else {
+                      messageInit(t);
+
+                      toast.dismiss(t.id);
+                    }
+                  }}
+                  className="ms-2"
+                />
+                <MdOutlineCancel
+                  id="cancelThePopUp"
+                  onClick={() => {
+                    setMessage("");
+                    toast.dismiss(t.id);
+                  }}
+                />
+              </button>
+            </>
+          )}
         </span>
       ),
       { id: "sendMesage" }
@@ -178,7 +215,7 @@ const BannerANdProfilePic = ({ email }) => {
   };
   return (
     <div>
-      {User?.length > 0 ? (
+      {!User ? (
         <>
           <div className="w-full min-h-screen flex justify-center items-center">
             <span className="loading loading-spinner loading-lg"></span>

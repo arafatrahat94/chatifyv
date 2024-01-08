@@ -3,6 +3,7 @@ import POST from "@/Components/HOMEPAGE/POST";
 import STORY from "@/Components/HOMEPAGE/STORY";
 import Image from "next/image";
 import { Suspense } from "react";
+import Connect from "./Connect";
 
 export const metadata = {
   title: "Home | Chatify",
@@ -11,20 +12,7 @@ export const metadata = {
 export default function Home() {
   return (
     <main className="px-4 ">
-      <Suspense
-        fallback={
-          <div className="flex items-center justify-center w-full h-[300px]">
-            <div class="loader23">
-              <span>CHATIFY</span>
-              <span>CHATIFY</span>
-            </div>
-          </div>
-        }
-      >
-        <STORY></STORY>
-      </Suspense>
-      <POST></POST>
-      <ALL></ALL>
+      <Connect />
     </main>
   );
 }
